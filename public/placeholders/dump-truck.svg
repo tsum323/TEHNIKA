@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Самосвалы — изображение-заглушка">
+  <defs>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#262B32" stroke-width="1"/></pattern>
+    <pattern id="h" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="24" fill="#F5C400"/></pattern>
+  </defs>
+  <rect width="800" height="600" fill="#1C2026"/>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <rect x="40" y="40" width="96" height="12" fill="url(#h)"/>
+  <rect x="0" y="430" width="800" height="4" fill="#3A4048"/>
+  <rect x="0" y="434" width="800" height="166" fill="#181B20"/>
+  <g stroke-linejoin="round" stroke-linecap="round">
+  <rect x="140" y="360" width="500" height="22" fill="#3A4048"/>
+  <circle cx="210" cy="396" r="34" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="210" cy="396" r="15" fill="#9AA4AE"/><circle cx="210" cy="396" r="5" fill="#F5C400"/><circle cx="278" cy="396" r="34" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="278" cy="396" r="15" fill="#9AA4AE"/><circle cx="278" cy="396" r="5" fill="#F5C400"/><circle cx="545" cy="396" r="34" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="545" cy="396" r="15" fill="#9AA4AE"/><circle cx="545" cy="396" r="5" fill="#F5C400"/>
+  <path d="M540 376 V268 H612 L652 318 V376 Z" fill="#C3CAD1"/>
+  <path d="M554 282 H606 L634 318 H554 Z" fill="#4B5560"/>
+  <rect x="520" y="250" width="8" height="110" fill="#3A4048"/>
+  <path d="M150 250 H512 L502 358 H172 Z" fill="#F5C400"/>
+  <path d="M220 258 V350" stroke="#C99F00" stroke-width="6"/><path d="M290 258 V350" stroke="#C99F00" stroke-width="6"/><path d="M360 258 V350" stroke="#C99F00" stroke-width="6"/><path d="M430 258 V350" stroke="#C99F00" stroke-width="6"/>
+  <path d="M150 250 H512" stroke="#C99F00" stroke-width="8"/></g>
+  <rect x="40" y="494" width="8" height="64" fill="#F5C400"/>
+  <text x="66" y="530" font-family="Manrope, Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#E8ECEF" letter-spacing="1">САМОСВАЛЫ</text>
+  <text x="66" y="556" font-family="Manrope, Arial, Helvetica, sans-serif" font-size="15" fill="#8A949E" letter-spacing="2">ИЗОБРАЖЕНИЕ-ЗАГЛУШКА</text>
+</svg>

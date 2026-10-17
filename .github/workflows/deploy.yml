@@ -1,0 +1,68 @@
+# Публикация сайта на GitHub Pages после каждого обновления ветки main
+# (то есть после слияния Pull Request). Можно запустить и вручную во вкладке Actions.
+name: Публикация на GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Одновременно выполняется только одна публикация.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Сборка
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить код
+        uses: actions/checkout@v5
+
+      - name: Установить Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Настроить GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Установить зависимости
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Проверка типов TypeScript
+        run: npm run typecheck
+
+      - name: Production-сборка
+        run: npm run build
+        env:
+          # Подпапка сайта на GitHub Pages, например "/TEHNIKA".
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Загрузить готовый сайт
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./out
+
+  deploy:
+    name: Публикация
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Опубликовать на GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

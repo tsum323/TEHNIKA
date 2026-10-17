@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+/*
+ * ДИЗАЙН-СИСТЕМА «Industrial Premium»
+ *
+ * Все цвета, размеры текста и радиусы задаются здесь как токены.
+ * Tailwind автоматически создаёт из них классы: bg-graphite-900, text-signal,
+ * text-display, rounded-card и т. д. Меняйте значения здесь — они обновятся на всём сайте.
+ */
+@theme {
+  /* Шрифт подключается в src/app/layout.tsx через next/font */
+  --font-sans: var(--font-manrope), "Arial", "Helvetica", sans-serif;
+
+  /* --- Цвета --- */
+  /* Графитовый — основной тёмный цвет */
+  --color-graphite-950: #121519;
+  --color-graphite-900: #1c2026;
+  --color-graphite-800: #262b32;
+  --color-graphite-700: #3a4048;
+  --color-graphite-600: #515862;
+
+  /* Стальной серый */
+  --color-steel-500: #6b7580;
+  --color-steel-400: #8a949e;
+  --color-steel-300: #c3cad1;
+  --color-steel-200: #dde1e5;
+
+  /* Фоны */
+  --color-surface: #f4f5f6; /* светлый фон секций */
+  --color-white: #ffffff;
+
+  /* Сигнальный жёлтый — акценты и основная кнопка */
+  --color-signal: #f5c400;
+  --color-signal-hover: #ffd633;
+  --color-signal-pressed: #dbaf00;
+
+  /* Границы и текст */
+  --color-border: #dde1e5;
+  --color-border-strong: #c3cad1;
+  --color-ink: #1c2026; /* основной текст */
+  --color-muted: #555d67; /* вторичный текст: контраст 6.5:1 на белом */
+  --color-muted-inverse: #aeb6be; /* вторичный текст на графитовом фоне */
+
+  /* Состояния */
+  --color-error: #b3261e;
+  --color-error-bg: #fdecea;
+  --color-success: #1e7a3c;
+  --color-success-bg: #e7f5ec;
+
+  /* --- Типографика: адаптивные размеры (мобильный → десктоп) --- */
+  --text-display: clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.025em;
+  --text-display--font-weight: 800;
+
+  --text-h1: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h1--font-weight: 800;
+
+  --text-h2: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 800;
+
+  --text-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 700;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.5;
+
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.4;
+  --text-overline--letter-spacing: 0.14em;
+  --text-overline--font-weight: 700;
+
+  /* --- Радиусы --- */
+  --radius-control: 0.375rem; /* кнопки и поля */
+  --radius-card: 0.75rem; /* карточки */
+
+  /* --- Тени (сдержанные) --- */
+  --shadow-card: 0 1px 2px rgb(18 21 25 / 0.06), 0 1px 1px rgb(18 21 25 / 0.04);
+  --shadow-card-hover: 0 12px 32px -12px rgb(18 21 25 / 0.25);
+
+  /* --- Ширина контента --- */
+  --container-site: 76rem; /* 1216px */
+}
+
+/* Цвет кольца фокуса: графитовый на светлом фоне, жёлтый — на тёмном */
+:root {
+  --focus-ring: var(--color-graphite-900);
+  color-scheme: light;
+}
+.surface-dark {
+  --focus-ring: var(--color-signal);
+}
+
+@layer base {
+  html {
+    /* Отступ для якорей, чтобы заголовок не прятался под липкой шапкой */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-white);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-graphite-950);
+  }
+
+  /* Убираем стандартный маркер у раскрывающихся блоков FAQ */
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+/* Плавная прокрутка — только если пользователь не отключил анимации */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Уважение к настройке «Уменьшить движение» */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Жёлто-чёрная предупреждающая полоса — фирменный акцент */
+@utility hazard-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-signal) 0 10px,
+    var(--color-graphite-950) 10px 20px
+  );
+}
+
+/* Тонкая инженерная сетка для тёмных блоков */
+@utility blueprint-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
