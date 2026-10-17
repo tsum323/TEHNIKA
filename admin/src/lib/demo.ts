@@ -136,7 +136,7 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
       id, number: i + 1, client_id: client?.id ?? null,
       contact_name: client?.name ?? "Частный заказчик (демо)", contact_phone: client?.phone ?? "+7 (000) 555-55-55",
       source: sources[Math.floor(rnd() * sources.length)], category: item.category, equipment_id: item.id,
-      address: "Краснодарский край (демо)", start_date: start, shifts, client_price_per_shift: item.client_price_per_shift,
+      address: "Краснодарский край (демо)", start_date: start, end_date: null, shifts, client_price_per_shift: item.client_price_per_shift,
       status, comment: "", created_by: DEMO_MANAGER_ID, created_at: isoDaysAgo(daysAgo + 3),
     });
     const best = supplier_offers.filter((o) => o.equipment_id === item.id).sort((a, b) => a.cost_per_shift - b.cost_per_shift)[0];
@@ -144,6 +144,26 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
       request_costs.push({ request_id: id, supplier_id: best.supplier_id, cost_per_shift: best.cost_per_shift, extra_costs: rnd() < 0.5 ? 3000 : 0, notes: "" });
     }
   }
+  // Брони на ближайшие недели — чтобы календарь занятости был наглядным (есть и одно пересечение).
+  const future: [string, number, number, RequestStatus, string][] = [
+    ["e1", 1, 5, "confirmed", "c1"], ["e1", 4, 3, "in_progress", "c3"], ["e5", 2, 2, "confirmed", "c4"],
+    ["e7", 0, 10, "confirmed", "c2"], ["e9", 6, 4, "new", "c1"], ["e11", 3, 6, "confirmed", "c4"],
+    ["e3", 9, 3, "in_progress", "c2"], ["e6", 12, 2, "confirmed", "c1"], ["e12", 1, 4, "confirmed", "c3"],
+  ];
+  future.forEach(([equipmentId, inDays, shifts, status, clientId], i) => {
+    const item = equipment.find((e) => e.id === equipmentId)!;
+    const client = clients.find((c) => c.id === clientId)!;
+    const start = isoDaysAgo(-inDays).slice(0, 10);
+    const id = `f${i + 1}`;
+    requests.push({
+      id, number: requests.length + 1, client_id: client.id, contact_name: client.name, contact_phone: client.phone,
+      source: "phone", category: item.category, equipment_id: item.id, address: "Краснодарский край (демо)",
+      start_date: start, end_date: null, shifts, client_price_per_shift: item.client_price_per_shift,
+      status, comment: "", created_by: DEMO_MANAGER_ID, created_at: isoDaysAgo(2),
+    });
+    const best = supplier_offers.filter((o) => o.equipment_id === item.id).sort((a, b) => a.cost_per_shift - b.cost_per_shift)[0];
+    if (best && status === "confirmed") request_costs.push({ request_id: id, supplier_id: best.supplier_id, cost_per_shift: best.cost_per_shift, extra_costs: 0, notes: "" });
+  });
   requests.sort((a, b) => b.number - a.number);
 
   // Оплаты: большинство выполненных заявок оплачено полностью, часть — частично, часть — долг.

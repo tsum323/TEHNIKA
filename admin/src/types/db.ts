@@ -83,6 +83,8 @@ export interface RentalRequest {
   equipment_id: string | null;
   address: string;
   start_date: string | null;
+  /** Дата окончания аренды. null — считается по количеству смен. */
+  end_date: string | null;
   shifts: number | null;
   client_price_per_shift: number | null;
   status: RequestStatus;

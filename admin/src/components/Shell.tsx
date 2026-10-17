@@ -16,6 +16,7 @@ const nav = [
   { href: "/", label: "Обзор" },
   { href: "/requests/", label: "Заявки" },
   { href: "/payments/", label: "Оплаты" },
+  { href: "/calendar/", label: "Календарь" },
   { href: "/equipment/", label: "Техника" },
   { href: "/suppliers/", label: "Поставщики" },
   { href: "/clients/", label: "Клиенты" },
