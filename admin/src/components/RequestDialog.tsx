@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth";
+import { conflictsFor, defaultEndDate } from "@/lib/calendar";
 import { useData } from "@/lib/data";
 import { db } from "@/lib/db";
 import { requestMoney } from "@/lib/finance";
-import { formatMoney, formatPercent, parseNumber } from "@/lib/format";
+import { formatDate, formatMoney, formatPercent, parseNumber } from "@/lib/format";
 import { categoryLabels, sourceLabels, statusLabels, statusOrder, toOptions } from "@/lib/labels";
 import { nextPhoneValue } from "@/lib/phone";
 import type { CategoryId, RentalRequest, RequestCost, RequestSource, RequestStatus } from "@/types/db";
@@ -31,6 +32,8 @@ interface FormState {
   category: string;
   equipment_id: string;
   start_date: string;
+  /** Пусто — считается автоматически по сменам. */
+  end_date: string;
   shifts: string;
   client_price_per_shift: string;
   address: string;
@@ -54,6 +57,7 @@ function initialState(request: RentalRequest | null, cost: RequestCost | undefin
     category: request?.category ?? "",
     equipment_id: request?.equipment_id ?? "",
     start_date: request?.start_date ?? "",
+    end_date: request?.end_date ?? "",
     shifts: str(request?.shifts),
     client_price_per_shift: str(request?.client_price_per_shift),
     address: request?.address ?? "",
@@ -124,6 +128,12 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
 
   // Предварительный расчёт денег по текущим значениям формы.
   const shifts = parseNumber(form.shifts);
+  const autoEnd = defaultEndDate(form.start_date || null, shifts);
+  const endDate = form.end_date || autoEnd;
+  const conflicts = conflictsFor(
+    { equipmentId: form.equipment_id || null, start: form.start_date || null, end: endDate, excludeId: request?.id },
+    data.requests,
+  );
   const preview = requestMoney(
     { shifts, client_price_per_shift: parseNumber(form.client_price_per_shift) } as RentalRequest,
     form.cost_per_shift ? ({ cost_per_shift: parseNumber(form.cost_per_shift) ?? 0, extra_costs: parseNumber(form.extra_costs) ?? 0 } as RequestCost) : undefined,
@@ -133,6 +143,8 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
     const next: typeof errors = {};
     if (!form.contact_name.trim()) next.contact_name = "Укажите имя или название клиента";
     if (form.shifts && (!Number.isInteger(shifts) || (shifts ?? 0) < 1)) next.shifts = "Целое число от 1";
+    if (form.end_date && !form.start_date) next.end_date = "Сначала укажите дату начала";
+    if (form.end_date && form.start_date && form.end_date < form.start_date) next.end_date = "Не раньше даты начала";
     for (const field of ["client_price_per_shift", "cost_per_shift", "extra_costs"] as const) {
       const value = parseNumber(form[field]);
       if (form[field] && (value == null || value < 0)) next[field] = "Введите сумму числом";
@@ -154,6 +166,8 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
       category: (form.category || null) as CategoryId | null,
       equipment_id: form.equipment_id || null,
       start_date: form.start_date || null,
+      // Если дата окончания совпадает с расчётной — храним пусто, чтобы она пересчитывалась при смене смен.
+      end_date: form.end_date && form.end_date !== autoEnd ? form.end_date : null,
       shifts,
       client_price_per_shift: parseNumber(form.client_price_per_shift),
       address: form.address,
@@ -262,6 +276,35 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
           <SelectField label="Техника" placeholder="— не выбрана —" options={equipmentOptions} value={form.equipment_id} onChange={(e) => chooseEquipment(e.target.value)} />
           <TextField label="Дата начала" type="date" value={form.start_date} onChange={(e) => set("start_date", e.target.value)} />
           <TextField label="Смен" type="number" inputMode="numeric" min={1} value={form.shifts} onChange={(e) => set("shifts", e.target.value)} error={errors.shifts} />
+          <TextField
+            label="Дата окончания"
+            type="date"
+            value={form.end_date || autoEnd || ""}
+            min={form.start_date || undefined}
+            onChange={(e) => set("end_date", e.target.value)}
+            error={errors.end_date}
+            hint={form.end_date && form.end_date !== autoEnd ? "Указана вручную" : "Считается сама: начало + смены − 1"}
+          />
+          {form.end_date && form.end_date !== autoEnd && (
+            <div className="flex items-end pb-2">
+              <button type="button" onClick={() => set("end_date", "")} className="text-sm font-semibold underline underline-offset-4">
+                Вернуть автоматический расчёт
+              </button>
+            </div>
+          )}
+          {conflicts.length > 0 && (
+            <div role="status" className="rounded-control border border-error/40 bg-error-bg px-4 py-3 text-sm sm:col-span-2">
+              <p className="font-bold text-error">⚠ Эта техника уже занята в эти даты:</p>
+              <ul className="mt-1 list-disc pl-5">
+                {conflicts.map((c) => (
+                  <li key={c.request.id}>
+                    №{c.request.number} · {c.request.contact_name} · {formatDate(c.start)}–{formatDate(c.end)} · {statusLabels[c.request.status]}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-1 text-muted">Если нужна вторая такая же машина — уточните наличие у другого поставщика.</p>
+            </div>
+          )}
           <TextField
             label="Цена для клиента за смену, ₽"
             type="number"
