@@ -134,7 +134,6 @@ export function RequestForm({ defaultCategory = "", defaultEquipment = "" }: Req
           }}
           label={text.labels.phone}
           placeholder={text.placeholders.phone}
-          hint={text.hints.phone}
           type="tel"
           inputMode="tel"
           autoComplete="tel"

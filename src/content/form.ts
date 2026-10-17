@@ -28,7 +28,6 @@ export const requestForm: RequestFormContent = {
   },
   hints: {
     equipment: "Необязательно — подберём сами",
-    phone: "Вводите только цифры — скобки и дефисы появятся сами",
     startDate: "Необязательно",
     shifts: "Если не знаете — оставьте пустым",
   },
