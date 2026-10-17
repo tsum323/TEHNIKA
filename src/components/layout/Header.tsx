@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
+import { scrollToHashOnPage } from "@/lib/hashLink";
 import { routes } from "@/lib/routes";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -57,6 +58,7 @@ export function Header() {
               <li key={link.href}>
                 <Link
                   href={link.href}
+                  onClick={(event) => scrollToHashOnPage(event, link.href)}
                   aria-current={isActive(link.href) ? "page" : undefined}
                   className="rounded-control px-3 py-2 text-[0.9375rem] font-medium text-steel-300 transition-colors duration-150 hover:text-white aria-[current=page]:text-signal"
                 >
@@ -75,7 +77,7 @@ export function Header() {
             <Icon name="phone" className="size-4 text-signal" />
             {contacts.phone}
           </a>
-          <ButtonLink href={REQUEST_HREF} size="sm">
+          <ButtonLink href={REQUEST_HREF} size="sm" onClick={(event) => scrollToHashOnPage(event, REQUEST_HREF)}>
             Оставить заявку
           </ButtonLink>
         </div>
@@ -105,7 +107,10 @@ export function Header() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    onClick={close}
+                    onClick={(event) => {
+                      close();
+                      scrollToHashOnPage(event, link.href);
+                    }}
                     aria-current={isActive(link.href) ? "page" : undefined}
                     className="flex items-center justify-between border-b border-white/10 py-4 text-lg font-semibold aria-[current=page]:text-signal"
                   >
@@ -121,7 +126,16 @@ export function Header() {
               <Icon name="phone" className="size-5" />
               {contacts.phone}
             </ButtonLink>
-            <ButtonLink href={REQUEST_HREF} size="lg" fullWidth className="sm:w-auto sm:flex-1" onClick={close}>
+            <ButtonLink
+              href={REQUEST_HREF}
+              size="lg"
+              fullWidth
+              className="sm:w-auto sm:flex-1"
+              onClick={(event) => {
+                close();
+                scrollToHashOnPage(event, REQUEST_HREF);
+              }}
+            >
               Оставить заявку
             </ButtonLink>
           </div>
