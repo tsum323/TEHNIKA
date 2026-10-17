@@ -221,3 +221,55 @@ begin
     execute format('create policy %I on public.%I for all to authenticated using (public.is_owner()) with check (public.is_owner())', t || '_owner', t);
   end loop;
 end $$;
+
+-- =====================================================================
+-- ОПЛАТЫ (добавлено в задании «Учёт оплат»)
+--   incoming — деньги от клиента по заявке (видят все активные сотрудники);
+--   outgoing — оплата поставщику и прочих расходов по заявке (ТОЛЬКО ВЛАДЕЛЕЦ).
+-- =====================================================================
+do $$ begin
+  create type public.payment_direction as enum ('incoming', 'outgoing');
+exception when duplicate_object then null; end $$;
+
+create table if not exists public.payments (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references public.requests (id) on delete cascade,
+  direction public.payment_direction not null,
+  amount numeric(12, 2) not null check (amount > 0),
+  paid_at date not null default current_date,
+  method text not null default 'bank' check (method in ('bank', 'cash', 'card', 'other')),
+  comment text not null default '',
+  created_by uuid references public.profiles (id) on delete set null default auth.uid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists payments_request_idx on public.payments (request_id);
+create index if not exists payments_paid_at_idx on public.payments (paid_at);
+
+drop trigger if exists set_updated_at on public.payments;
+create trigger set_updated_at before update on public.payments
+  for each row execute function public.set_updated_at();
+
+alter table public.payments enable row level security;
+revoke all on public.payments from anon;
+
+-- Читать: владелец — все оплаты, менеджер — только оплаты от клиентов.
+drop policy if exists payments_select on public.payments;
+create policy payments_select on public.payments for select to authenticated
+  using (public.is_owner() or (public.is_staff() and direction = 'incoming'));
+
+-- Добавлять и менять: так же — менеджер не может создать или превратить оплату в «поставщику».
+drop policy if exists payments_insert on public.payments;
+create policy payments_insert on public.payments for insert to authenticated
+  with check (public.is_owner() or (public.is_staff() and direction = 'incoming'));
+
+drop policy if exists payments_update on public.payments;
+create policy payments_update on public.payments for update to authenticated
+  using (public.is_owner() or (public.is_staff() and direction = 'incoming'))
+  with check (public.is_owner() or (public.is_staff() and direction = 'incoming'));
+
+-- Удалять — только владелец.
+drop policy if exists payments_delete on public.payments;
+create policy payments_delete on public.payments for delete to authenticated
+  using (public.is_owner());

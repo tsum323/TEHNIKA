@@ -9,7 +9,8 @@ import { cn } from "@/lib/cn";
 import { useData } from "@/lib/data";
 import { formatMoney, formatMonth, formatMonthShort, formatNumber, formatPercent, plural } from "@/lib/format";
 import { statusOrder } from "@/lib/labels";
-import { computeStats, periodLabels, type Period } from "@/lib/stats";
+import { paidSince } from "@/lib/payments";
+import { computeStats, periodLabels, periodStart, type Period } from "@/lib/stats";
 
 /** «125 тыс», «1,2 млн» — короткие подписи на столбцах. */
 function short(value: number) {
@@ -56,6 +57,15 @@ export default function StatsPage() {
             <Stat label="Расходы" value={formatMoney(s.cost)} note="Поставщики и доп. расходы" />
             <Stat label="Прибыль" value={formatMoney(s.profit)} tone={s.profit >= 0 ? "positive" : "negative"} />
             <Stat label="Средняя наценка" value={s.markup != null ? formatPercent(s.markup) : "—"} note={s.margin != null ? `Маржа ${formatPercent(s.margin)}` : undefined} />
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <Stat label="Получено от клиентов" value={formatMoney(paidSince(data.payments, "incoming", periodStart(period)))} note="По датам оплат" />
+            <Stat label="Выплачено поставщикам" value={formatMoney(paidSince(data.payments, "outgoing", periodStart(period)))} note="И прочие расходы" />
+            <Stat
+              label="Деньги на руках"
+              value={formatMoney(paidSince(data.payments, "incoming", periodStart(period)) - paidSince(data.payments, "outgoing", periodStart(period)))}
+              note="Получено − выплачено"
+            />
           </div>
           {s.missingCost > 0 && (
             <p role="status" className="mt-3 rounded-control bg-signal/15 px-4 py-3 text-sm">

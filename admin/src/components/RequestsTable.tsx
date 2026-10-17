@@ -5,7 +5,9 @@ import { cn } from "@/lib/cn";
 import { useData } from "@/lib/data";
 import { requestMoney } from "@/lib/finance";
 import { formatDate, formatMoney } from "@/lib/format";
+import { clientBalance } from "@/lib/payments";
 import type { RentalRequest } from "@/types/db";
+import { PaymentStateBadge } from "./PaymentStateBadge";
 import { StatusBadge } from "./ui/Badge";
 import { rowButtonClass } from "./ui/Page";
 
@@ -17,7 +19,7 @@ export function RequestsTable({ requests, onOpen }: { requests: RentalRequest[];
 
   return (
     <div className="overflow-x-auto rounded-card border border-border bg-white shadow-card">
-      <table className="w-full min-w-[44rem] text-left text-sm">
+      <table className="w-full min-w-[50rem] text-left text-sm">
         <thead className="border-b border-border bg-surface text-xs tracking-wide text-muted uppercase">
           <tr>
             <th scope="col" className="px-4 py-3">№</th>
@@ -28,6 +30,7 @@ export function RequestsTable({ requests, onOpen }: { requests: RentalRequest[];
             <th scope="col" className="px-4 py-3 text-right">Сумма</th>
             {isOwner && <th scope="col" className="px-4 py-3 text-right">Прибыль</th>}
             <th scope="col" className="px-4 py-3">Статус</th>
+            <th scope="col" className="px-4 py-3">Оплата</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
@@ -55,6 +58,9 @@ export function RequestsTable({ requests, onOpen }: { requests: RentalRequest[];
                 )}
                 <td className="px-4 py-3">
                   <StatusBadge status={request.status} />
+                </td>
+                <td className="px-4 py-3">
+                  <PaymentStateBadge state={clientBalance(request, data.payments).state} />
                 </td>
               </tr>
             );

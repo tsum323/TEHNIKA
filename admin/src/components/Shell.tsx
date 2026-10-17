@@ -15,6 +15,7 @@ import { ErrorNote } from "./ui/Page";
 const nav = [
   { href: "/", label: "Обзор" },
   { href: "/requests/", label: "Заявки" },
+  { href: "/payments/", label: "Оплаты" },
   { href: "/equipment/", label: "Техника" },
   { href: "/suppliers/", label: "Поставщики" },
   { href: "/clients/", label: "Клиенты" },
