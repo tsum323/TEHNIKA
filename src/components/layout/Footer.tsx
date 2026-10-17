@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { categories } from "@/content/equipment";
 import { site } from "@/content/site";
+import { categoryHref } from "@/lib/routes";
 import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "./Logo";
@@ -16,7 +18,7 @@ export function Footer() {
   return (
     <footer className="surface-dark bg-graphite-950 text-white">
       <div aria-hidden="true" className="hazard-stripes h-1.5" />
-      <Container className="grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr] lg:gap-16">
+      <Container className="grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:gap-12">
         <div>
           <Logo />
           <p className="mt-5 max-w-sm text-sm text-muted-inverse">{site.description}</p>
@@ -29,6 +31,19 @@ export function Footer() {
               <li key={link.href}>
                 <Link href={link.href} className="text-steel-300 transition-colors hover:text-white">
                   {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav aria-label="Категории техники">
+          <h2 className="text-overline text-steel-400 uppercase">Техника</h2>
+          <ul className="mt-4 flex flex-col gap-2.5">
+            {categories.map((category) => (
+              <li key={category.id}>
+                <Link href={categoryHref(category.id)} className="text-steel-300 transition-colors hover:text-white">
+                  {category.name}
                 </Link>
               </li>
             ))}

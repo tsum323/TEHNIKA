@@ -1,33 +1,29 @@
-import { categories, equipment } from "@/content/equipment";
+import { catalog } from "@/content/catalog";
 import { home } from "@/content/home";
-import { plural } from "@/lib/format";
-import { CategoryCard } from "@/components/ui/CategoryCard";
+import { routes } from "@/lib/routes";
+import { CategoryGrid } from "@/components/catalog/CategoryGrid";
+import { ButtonLink } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
 import { Section, SectionHeading } from "@/components/ui/Section";
 
-/** Шесть категорий техники. Пока каталога нет, карточки ведут к популярной технике. */
+/** Шесть категорий техники — каждая ведёт на свою страницу в каталоге. */
 export function Categories() {
   return (
     <Section id="categories" tone="light" aria-labelledby="categories-title">
-      <SectionHeading
-        id="categories-title"
-        eyebrow={home.categories.eyebrow}
-        title={home.categories.title}
-        description={home.categories.description}
-      />
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-        {categories.map((category) => {
-          const count = equipment.filter((item) => item.categoryId === category.id).length;
-          return (
-            <li key={category.id}>
-              <CategoryCard
-                category={category}
-                href="/#popular"
-                meta={`${count} ${plural(count, ["модель", "модели", "моделей"])} в примерах`}
-              />
-            </li>
-          );
-        })}
-      </ul>
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <SectionHeading
+          id="categories-title"
+          eyebrow={home.categories.eyebrow}
+          title={home.categories.title}
+          description={home.categories.description}
+          className="md:mb-14"
+        />
+        <ButtonLink href={routes.catalog} variant="secondary" className="mb-10 self-start md:mb-14 md:self-auto">
+          {catalog.allCatalogButton}
+          <Icon name="arrowRight" />
+        </ButtonLink>
+      </div>
+      <CategoryGrid />
     </Section>
   );
 }

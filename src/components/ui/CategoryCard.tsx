@@ -6,7 +6,7 @@ import { Icon } from "./Icon";
 
 interface CategoryCardProps {
   category: EquipmentCategory;
-  /** Куда ведёт карточка. Пока каталога нет — к блоку популярной техники. */
+  /** Адрес страницы категории. */
   href: string;
   /** Дополнительная строка, например количество моделей. */
   meta?: string;
