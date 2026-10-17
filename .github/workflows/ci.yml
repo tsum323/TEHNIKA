@@ -1,5 +1,6 @@
 # Проверка кода для каждого Pull Request в main:
 # установка зависимостей → ESLint → проверка типов → production-сборка.
+# Сайт и админ-панель проверяются отдельно и параллельно.
 name: Проверка кода
 
 on:
@@ -41,3 +42,34 @@ jobs:
         env:
           # Собираем так же, как для GitHub Pages: сайт в подпапке с именем репозитория.
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+
+  admin:
+    name: "Админ-панель: линтер, типы и сборка"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin
+    steps:
+      - name: Получить код
+        uses: actions/checkout@v5
+
+      - name: Установить Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Установить зависимости
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Проверка типов TypeScript
+        run: npm run typecheck
+
+      - name: Production-сборка (демо-режим, без подключения к базе)
+        run: npm run build
+        env:
+          ADMIN_BASE_PATH: /${{ github.event.repository.name }}/admin

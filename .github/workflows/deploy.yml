@@ -30,6 +30,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            admin/package-lock.json
 
       - name: Настроить GitHub Pages
         id: pages
@@ -49,6 +52,29 @@ jobs:
         env:
           # Подпапка сайта на GitHub Pages, например "/TEHNIKA".
           NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      # --- Админ-панель: отдельное приложение в подпапке /admin/ ---
+      - name: "Админ-панель: установить зависимости"
+        working-directory: admin
+        run: npm ci
+
+      - name: "Админ-панель: ESLint и проверка типов"
+        working-directory: admin
+        run: npm run lint && npm run typecheck
+
+      - name: "Админ-панель: сборка"
+        working-directory: admin
+        run: npm run build
+        env:
+          ADMIN_BASE_PATH: ${{ steps.pages.outputs.base_path }}/admin
+          # Адрес базы и публичный ключ Supabase берутся из секретов репозитория
+          # (Settings → Secrets and variables → Actions). Если секретов нет —
+          # админ-панель публикуется в демо-режиме с ненастоящими данными.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+      - name: Сложить сайт и админ-панель вместе
+        run: cp -r admin/out out/admin
 
       - name: Загрузить готовый сайт
         uses: actions/upload-pages-artifact@v4
