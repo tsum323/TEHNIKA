@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Автокраны — изображение-заглушка">
+  <defs>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#262B32" stroke-width="1"/></pattern>
+    <pattern id="h" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="24" fill="#F5C400"/></pattern>
+  </defs>
+  <rect width="800" height="600" fill="#1C2026"/>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <rect x="40" y="40" width="96" height="12" fill="url(#h)"/>
+  <rect x="0" y="430" width="800" height="4" fill="#3A4048"/>
+  <rect x="0" y="434" width="800" height="166" fill="#181B20"/>
+  <g stroke-linejoin="round" stroke-linecap="round">
+  <rect x="120" y="358" width="520" height="26" fill="#3A4048"/>
+  <circle cx="170" cy="404" r="26" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="170" cy="404" r="12" fill="#9AA4AE"/><circle cx="170" cy="404" r="4" fill="#F5C400"/><circle cx="232" cy="404" r="26" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="232" cy="404" r="12" fill="#9AA4AE"/><circle cx="232" cy="404" r="4" fill="#F5C400"/><circle cx="470" cy="404" r="26" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="470" cy="404" r="12" fill="#9AA4AE"/><circle cx="470" cy="404" r="4" fill="#F5C400"/><circle cx="532" cy="404" r="26" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="532" cy="404" r="12" fill="#9AA4AE"/><circle cx="532" cy="404" r="4" fill="#F5C400"/><circle cx="594" cy="404" r="26" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="594" cy="404" r="12" fill="#9AA4AE"/><circle cx="594" cy="404" r="4" fill="#F5C400"/>
+  <path d="M560 380 V288 H618 L652 330 V380 Z" fill="#C3CAD1"/>
+  <path d="M572 300 H612 L636 330 H572 Z" fill="#4B5560"/>
+  <rect x="300" y="318" width="170" height="42" rx="5" fill="#9AA4AE"/>
+  <rect x="440" y="282" width="46" height="40" rx="4" fill="#C3CAD1"/><rect x="448" y="290" width="30" height="20" fill="#4B5560"/>
+  <path d="M430 326 L456 304 L196 118 L176 134 Z" fill="#F5C400"/>
+  <path d="M250 165 L268 178 M300 201 L318 214 M350 237 L368 250" stroke="#3A4048" stroke-width="5"/>
+  <path d="M360 330 L300 262" stroke="#3A4048" stroke-width="10"/>
+  <path d="M186 130 V268" stroke="#9AA4AE" stroke-width="3"/>
+  <rect x="174" y="262" width="24" height="22" rx="3" fill="#9AA4AE"/>
+  <path d="M186 284 v12 a8 8 0 1 1 -10 6" fill="none" stroke="#F5C400" stroke-width="5"/>
+  <path d="M140 384 L130 426 M620 384 L630 426" stroke="#9AA4AE" stroke-width="8"/>
+  <rect x="112" y="424" width="36" height="8" fill="#9AA4AE"/><rect x="612" y="424" width="36" height="8" fill="#9AA4AE"/></g>
+  <rect x="40" y="494" width="8" height="64" fill="#F5C400"/>
+  <text x="66" y="530" font-family="Manrope, Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#E8ECEF" letter-spacing="1">АВТОКРАНЫ</text>
+  <text x="66" y="556" font-family="Manrope, Arial, Helvetica, sans-serif" font-size="15" fill="#8A949E" letter-spacing="2">ИЗОБРАЖЕНИЕ-ЗАГЛУШКА</text>
+</svg>

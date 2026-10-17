@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Катки — изображение-заглушка">
+  <defs>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#262B32" stroke-width="1"/></pattern>
+    <pattern id="h" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="24" fill="#F5C400"/></pattern>
+  </defs>
+  <rect width="800" height="600" fill="#1C2026"/>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <rect x="40" y="40" width="96" height="12" fill="url(#h)"/>
+  <rect x="0" y="430" width="800" height="4" fill="#3A4048"/>
+  <rect x="0" y="434" width="800" height="166" fill="#181B20"/>
+  <g stroke-linejoin="round" stroke-linecap="round">
+  <circle cx="540" cy="365" r="65" fill="#9AA4AE" stroke="#C3CAD1" stroke-width="4"/>
+  <circle cx="540" cy="365" r="20" fill="#3A4048"/>
+  <path d="M470 362 V286 H610 V362" fill="none" stroke="#F5C400" stroke-width="16"/>
+  <circle cx="240" cy="382" r="48" fill="#3A4048" stroke="#9AA4AE" stroke-width="4"/><circle cx="240" cy="382" r="22" fill="#9AA4AE"/><circle cx="240" cy="382" r="7" fill="#F5C400"/>
+  <rect x="200" y="290" width="260" height="62" rx="6" fill="#9AA4AE"/>
+  <rect x="220" y="308" width="110" height="6" fill="#3A4048"/><rect x="220" y="322" width="110" height="6" fill="#3A4048"/>
+  <rect x="440" y="314" width="40" height="22" fill="#3A4048"/>
+  <path d="M260 290 V196 M380 290 V196" stroke="#3A4048" stroke-width="10"/>
+  <rect x="246" y="186" width="148" height="14" rx="3" fill="#F5C400"/>
+  <rect x="300" y="244" width="40" height="46" rx="4" fill="#C3CAD1"/></g>
+  <rect x="40" y="494" width="8" height="64" fill="#F5C400"/>
+  <text x="66" y="530" font-family="Manrope, Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#E8ECEF" letter-spacing="1">КАТКИ</text>
+  <text x="66" y="556" font-family="Manrope, Arial, Helvetica, sans-serif" font-size="15" fill="#8A949E" letter-spacing="2">ИЗОБРАЖЕНИЕ-ЗАГЛУШКА</text>
+</svg>
