@@ -102,6 +102,10 @@
 .surface-dark {
   --focus-ring: var(--color-signal);
 }
+/* Светлый блок внутри тёмной секции (например, форма) — снова графитовое кольцо */
+.surface-light {
+  --focus-ring: var(--color-graphite-900);
+}
 
 @layer base {
   html {
