@@ -364,6 +364,11 @@ export function getCategory(id: string): EquipmentCategory | undefined {
   return categories.find((category) => category.id === id);
 }
 
+/** Найти машину по категории и идентификатору. */
+export function getEquipment(categoryId: string, id: string): Equipment | undefined {
+  return equipment.find((item) => item.categoryId === categoryId && item.id === id);
+}
+
 /** Вся техника одной категории. */
 export function getEquipmentByCategory(id: CategoryId): Equipment[] {
   return equipment.filter((item) => item.categoryId === id);

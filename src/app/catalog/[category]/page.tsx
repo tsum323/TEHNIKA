@@ -84,7 +84,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {items.map((item) => (
             <li key={item.id}>
-              <EquipmentCard item={item} href="#contacts" maxSpecs={item.specs.length} />
+              <EquipmentCard item={item} maxSpecs={item.specs.length} />
             </li>
           ))}
         </ul>

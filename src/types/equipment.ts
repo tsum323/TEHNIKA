@@ -42,6 +42,8 @@ export interface Equipment {
   id: string;
   name: string;
   categoryId: CategoryId;
+  /** Описание для страницы машины. Если не заполнено — берётся описание категории. */
+  description?: string;
   /** 3–5 основных характеристик. */
   specs: EquipmentSpec[];
   /** Публичная цена за смену в рублях (минимальная, «от»). */
