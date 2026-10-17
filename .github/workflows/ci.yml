@@ -1,0 +1,43 @@
+# Проверка кода для каждого Pull Request в main:
+# установка зависимостей → ESLint → проверка типов → production-сборка.
+name: Проверка кода
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Линтер, типы и сборка
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить код
+        uses: actions/checkout@v5
+
+      - name: Установить Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Установить зависимости
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Проверка типов TypeScript
+        run: npm run typecheck
+
+      - name: Production-сборка
+        run: npm run build
+        env:
+          # Собираем так же, как для GitHub Pages: сайт в подпапке с именем репозитория.
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
