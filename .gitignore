@@ -1,11 +1,11 @@
 # Зависимости
-/node_modules
+node_modules/
 /.pnp
 .pnp.*
 
 # Сборка Next.js
-/.next/
-/out/
+.next/
+out/
 /build
 next-env.d.ts
 *.tsbuildinfo

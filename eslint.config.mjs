@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Админ-панель — отдельное приложение со своими настройками.
+    "admin/**",
   ]),
 ]);
 
