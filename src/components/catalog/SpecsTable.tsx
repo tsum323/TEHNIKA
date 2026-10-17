@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { formatPrice, plural } from "@/lib/format";
+import { equipmentHref } from "@/lib/routes";
 import type { Equipment } from "@/types/equipment";
 
 interface SpecsTableProps {
@@ -37,7 +39,9 @@ export function SpecsTable({ items, caption }: SpecsTableProps) {
             </th>
             {items.map((item) => (
               <th key={item.id} scope="col" className="px-5 py-4 font-bold">
-                {item.name}
+                <Link href={equipmentHref(item)} className="underline decoration-white/30 underline-offset-4 hover:decoration-signal">
+                  {item.name}
+                </Link>
               </th>
             ))}
           </tr>
