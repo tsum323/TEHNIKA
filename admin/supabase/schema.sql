@@ -273,3 +273,16 @@ create policy payments_update on public.payments for update to authenticated
 drop policy if exists payments_delete on public.payments;
 create policy payments_delete on public.payments for delete to authenticated
   using (public.is_owner());
+
+-- =====================================================================
+-- КАЛЕНДАРЬ ЗАНЯТОСТИ (добавлено в задании «Календарь»)
+-- Дата окончания аренды. Если не указана, считается как дата начала + смены − 1.
+-- =====================================================================
+alter table public.requests add column if not exists end_date date;
+
+do $$ begin
+  alter table public.requests add constraint requests_end_after_start
+    check (end_date is null or start_date is null or end_date >= start_date);
+exception when duplicate_object then null; end $$;
+
+create index if not exists requests_equipment_dates_idx on public.requests (equipment_id, start_date, end_date);
