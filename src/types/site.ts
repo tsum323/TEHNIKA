@@ -82,4 +82,17 @@ export interface CatalogContent {
     otherTitle: string;
   };
   allCatalogButton: string;
+  equipment: {
+    eyebrow: string;
+    detailsButton: string;
+    requestButton: string;
+    callButton: string;
+    priceNote: string;
+    specsTitle: string;
+    termsTitle: string;
+    /** Общие условия аренды — показываются на странице каждой машины. */
+    terms: string[];
+    otherModelsTitle: string;
+    backToCategory: string;
+  };
 }
