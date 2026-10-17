@@ -38,7 +38,7 @@ export const requestForm: RequestFormContent = {
   errors: {
     nameRequired: "Укажите, как к вам обращаться",
     phoneRequired: "Укажите телефон для связи",
-    phoneInvalid: "Введите номер из 10 или 11 цифр, например +7 900 000-00-00",
+    phoneInvalid: "Введите номер полностью: +7 (___) ___-__-__ или 8 (___) ___-__-__",
     categoryRequired: "Выберите категорию техники",
     startDatePast: "Дата не может быть в прошлом",
     shiftsInvalid: "Введите целое число от 1 до 365",

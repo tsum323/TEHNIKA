@@ -4,6 +4,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { categories, equipment } from "@/content/equipment";
 import { requestForm as text } from "@/content/form";
 import { site } from "@/content/site";
+import { nextPhoneValue } from "@/lib/phone";
 import { COMMENT_MAX_LENGTH, emptyRequestForm, validateRequestForm } from "@/lib/requestForm";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -127,6 +128,10 @@ export function RequestForm({ defaultCategory = "", defaultEquipment = "" }: Req
         <Input {...bind("name")} label={text.labels.name} placeholder={text.placeholders.name} autoComplete="name" required />
         <Input
           {...bind("phone")}
+          onChange={(event) => {
+            const isDeletion = (event.nativeEvent as InputEvent).inputType?.startsWith("delete") ?? false;
+            update("phone", nextPhoneValue(values.phone, event.target.value, isDeletion));
+          }}
           label={text.labels.phone}
           placeholder={text.placeholders.phone}
           type="tel"
