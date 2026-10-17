@@ -177,7 +177,7 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
         </Section>
       )}
 
-      <ContactCta />
+      <ContactCta defaultCategory={category.id} defaultEquipment={item.id} />
     </>
   );
 }

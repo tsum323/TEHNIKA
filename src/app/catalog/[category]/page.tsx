@@ -137,7 +137,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <CategoryGrid exclude={category.id} />
       </Section>
 
-      <ContactCta />
+      <ContactCta defaultCategory={category.id} />
     </>
   );
 }
