@@ -28,6 +28,7 @@ export const requestForm: RequestFormContent = {
   },
   hints: {
     equipment: "Необязательно — подберём сами",
+    startDate: "Необязательно",
     shifts: "Если не знаете — оставьте пустым",
   },
   anyEquipment: "Любая подходящая",

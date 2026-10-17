@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost";
@@ -82,7 +82,7 @@ type ButtonLinkProps = StyleProps & {
   children: ReactNode;
   "aria-label"?: string;
   /** Обработчик нажатия — например, чтобы закрыть мобильное меню. */
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 };
 
 /**

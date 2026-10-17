@@ -155,7 +155,7 @@ export function RequestForm({ defaultCategory = "", defaultEquipment = "" }: Req
           autoComplete="street-address"
           className="sm:col-span-2"
         />
-        <Input {...bind("startDate")} label={text.labels.startDate} type="date" />
+        <Input {...bind("startDate")} label={text.labels.startDate} hint={text.hints.startDate} type="date" />
         <Input
           {...bind("shifts")}
           label={text.labels.shifts}

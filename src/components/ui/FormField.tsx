@@ -38,7 +38,7 @@ export function FieldWrapper({ label, hint, error, required, className, children
   const describedBy = [errorId, hintId].filter(Boolean).join(" ") || undefined;
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div className={cn("flex min-w-0 flex-col gap-2", className)}>
       <label htmlFor={id} className="text-sm font-semibold text-ink">
         {label}
         {required && (
