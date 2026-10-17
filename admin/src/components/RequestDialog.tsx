@@ -9,6 +9,7 @@ import { formatMoney, formatPercent, parseNumber } from "@/lib/format";
 import { categoryLabels, sourceLabels, statusLabels, statusOrder, toOptions } from "@/lib/labels";
 import { nextPhoneValue } from "@/lib/phone";
 import type { CategoryId, RentalRequest, RequestCost, RequestSource, RequestStatus } from "@/types/db";
+import { PaymentsSection } from "./PaymentsSection";
 import { Button } from "./ui/Button";
 import { Dialog } from "./ui/Dialog";
 import { SelectField, TextAreaField, TextField } from "./ui/Field";
@@ -208,7 +209,7 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
         <>
           {request && isOwner && (
             <Button variant="danger" onClick={() => void remove()} disabled={saving} className="mr-auto">
-              Удалить
+              Удалить заявку
             </Button>
           )}
           <Button variant="ghost" onClick={onClose}>
@@ -310,6 +311,15 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
             </dl>
           </fieldset>
         )}
+
+        <div>
+          <h3 className="mb-3 text-sm font-bold tracking-wide text-muted uppercase">Оплаты</h3>
+          {request ? (
+            <PaymentsSection requestId={request.id} />
+          ) : (
+            <p className="text-sm text-muted">Оплаты можно внести после сохранения заявки.</p>
+          )}
+        </div>
       </div>
     </Dialog>
   );

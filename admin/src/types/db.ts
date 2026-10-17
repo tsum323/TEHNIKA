@@ -16,6 +16,8 @@ export type CategoryId =
 export type RequestStatus = "new" | "in_progress" | "confirmed" | "completed" | "cancelled";
 export type RequestSource = "site" | "phone" | "messenger" | "repeat" | "other";
 export type ClientKind = "company" | "person";
+export type PaymentDirection = "incoming" | "outgoing";
+export type PaymentMethod = "bank" | "cash" | "card" | "other";
 
 export interface Profile {
   id: string;
@@ -98,6 +100,23 @@ export interface RequestCost {
   notes: string;
 }
 
+/**
+ * Оплата по заявке.
+ * incoming — деньги от клиента; outgoing — оплата поставщику и расходов (видит только владелец).
+ */
+export interface Payment {
+  id: string;
+  request_id: string;
+  direction: PaymentDirection;
+  amount: number;
+  /** Дата оплаты "2026-10-17". */
+  paid_at: string;
+  method: PaymentMethod;
+  comment: string;
+  created_by: string | null;
+  created_at: string;
+}
+
 /** Все таблицы и типы их строк. */
 export interface Tables {
   profiles: Profile;
@@ -107,6 +126,7 @@ export interface Tables {
   clients: Client;
   requests: RentalRequest;
   request_costs: RequestCost;
+  payments: Payment;
 }
 
 export type TableName = keyof Tables;

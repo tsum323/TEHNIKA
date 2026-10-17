@@ -15,6 +15,7 @@ const empty: AllData = {
   clients: [],
   requests: [],
   request_costs: [],
+  payments: [],
 };
 
 const ALL_TABLES = Object.keys(empty) as TableName[];

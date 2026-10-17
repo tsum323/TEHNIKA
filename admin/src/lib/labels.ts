@@ -1,4 +1,4 @@
-import type { CategoryId, ClientKind, RequestSource, RequestStatus, StaffRole } from "@/types/db";
+import type { CategoryId, ClientKind, PaymentDirection, PaymentMethod, RequestSource, RequestStatus, StaffRole } from "@/types/db";
 
 /** Русские названия для значений из базы. */
 
@@ -33,6 +33,18 @@ export const sourceLabels: Record<RequestSource, string> = {
 export const clientKindLabels: Record<ClientKind, string> = {
   company: "Организация",
   person: "Частное лицо",
+};
+
+export const paymentDirectionLabels: Record<PaymentDirection, string> = {
+  incoming: "От клиента",
+  outgoing: "Поставщику / расходы",
+};
+
+export const paymentMethodLabels: Record<PaymentMethod, string> = {
+  bank: "Безнал",
+  cash: "Наличные",
+  card: "Карта",
+  other: "Другое",
 };
 
 export const roleLabels: Record<StaffRole, string> = {

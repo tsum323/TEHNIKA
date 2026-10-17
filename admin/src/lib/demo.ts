@@ -2,6 +2,8 @@ import type {
   CategoryId,
   Client,
   Equipment,
+  Payment,
+  PaymentMethod,
   Profile,
   RentalRequest,
   RequestCost,
@@ -144,7 +146,37 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
   }
   requests.sort((a, b) => b.number - a.number);
 
-  return { profiles, suppliers, equipment, supplier_offers, clients, requests, request_costs };
+  // Оплаты: большинство выполненных заявок оплачено полностью, часть — частично, часть — долг.
+  const payments: Payment[] = [];
+  const methods: PaymentMethod[] = ["bank", "bank", "cash", "card"];
+  const pay = (r: RentalRequest, direction: Payment["direction"], amount: number, daysAfterStart: number) => {
+    const date = new Date(r.start_date ?? r.created_at);
+    date.setDate(date.getDate() + daysAfterStart);
+    const today = new Date();
+    payments.push({
+      id: `p${payments.length + 1}`, request_id: r.id, direction, amount: Math.round(amount),
+      paid_at: (date > today ? today : date).toISOString().slice(0, 10),
+      method: methods[Math.floor(rnd() * methods.length)], comment: "", created_by: DEMO_MANAGER_ID, created_at: date.toISOString(),
+    });
+  };
+  for (const r of requests) {
+    if (r.status !== "completed" && r.status !== "confirmed") continue;
+    const revenue = (r.client_price_per_shift ?? 0) * (r.shifts ?? 0);
+    const cost = request_costs.find((c) => c.request_id === r.id);
+    const roll = rnd();
+    if (r.status === "completed") {
+      if (roll < 0.65) pay(r, "incoming", revenue, 3);
+      else if (roll < 0.85) { pay(r, "incoming", revenue * 0.5, 0); }
+      // иначе — клиент ещё не платил (должник)
+    } else if (roll < 0.5) pay(r, "incoming", revenue * 0.3, -2); // предоплата
+    if (cost && r.status === "completed") {
+      const total = cost.cost_per_shift * (r.shifts ?? 0) + cost.extra_costs;
+      if (rnd() < 0.8) pay(r, "outgoing", total, 7);
+      else pay(r, "outgoing", total * 0.5, 2);
+    }
+  }
+
+  return { profiles, suppliers, equipment, supplier_offers, clients, requests, request_costs, payments };
 }
 
 let data = buildSeed();
@@ -171,21 +203,29 @@ function canWrite(table: TableName) {
   return canRead(table);
 }
 
+/** Как в базе: менеджер видит и вносит только оплаты от клиентов. */
+function rowAllowed(table: TableName, row: Record<string, unknown>) {
+  return role === "owner" || table !== "payments" || row.direction === "incoming";
+}
+
 export const demoDb: Db = {
   async list(table) {
     if (!canRead(table)) return [];
-    return rows(table).map((row) => ({ ...row }));
+    return rows(table)
+      .filter((row) => rowAllowed(table, row as unknown as Record<string, unknown>))
+      .map((row) => ({ ...row }));
   },
   async insert(table, row) {
-    if (!canWrite(table)) denied();
+    if (!canWrite(table) || !rowAllowed(table, row as Record<string, unknown>)) denied();
     const now = new Date().toISOString();
     const full = { id: uid(), created_at: now, ...row } as Tables[typeof table];
     if (table === "requests") Object.assign(full, { number: nextNumber++, created_by: demoSession.userId });
+    if (table === "payments") Object.assign(full, { created_by: demoSession.userId });
     data = { ...data, [table]: [full, ...rows(table)] };
     return { ...full };
   },
   async update(table, key, patch) {
-    if (!canWrite(table)) denied();
+    if (!canWrite(table) || !rowAllowed(table, { direction: "incoming", ...(patch as Record<string, unknown>) })) denied();
     data = { ...data, [table]: rows(table).map((row) => (matches(row, key) ? { ...row, ...patch } : row)) };
   },
   async upsert(table, row) {
