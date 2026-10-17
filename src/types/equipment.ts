@@ -20,6 +20,12 @@ export interface EquipmentCategory {
   name: string;
   /** Короткое описание для карточки категории. */
   description: string;
+  /** Подробное описание для страницы категории (1–2 абзаца). */
+  intro: string[];
+  /** Для каких работ подходит техника. */
+  applications: string[];
+  /** Что уточнить при заявке — помогает быстрее подобрать машину. */
+  requestChecklist: string[];
   /** Путь к изображению от папки public/, например "/placeholders/excavator.svg". */
   image: string;
   /** Текст для alt изображения. */
