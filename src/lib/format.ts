@@ -1,6 +1,6 @@
-/** Форматирует цену: 25000 → "25 000 ₽". */
+/** Форматирует цену: 25000 → "25 000 ₽". Пробелы неразрывные — цена не переносится по частям. */
 export function formatPrice(value: number): string {
-  return `${new Intl.NumberFormat("ru-RU").format(value)} ₽`;
+  return `${new Intl.NumberFormat("ru-RU").format(value)}\u00A0₽`;
 }
 
 /** Склонение слова по числу: plural(2, ["смена", "смены", "смен"]) → "смены". */

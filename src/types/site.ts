@@ -68,3 +68,18 @@ export interface HomeContent {
   faq: SectionText;
   contacts: SectionText;
 }
+
+/** Тексты страниц каталога. */
+export interface CatalogContent {
+  index: SectionText;
+  category: {
+    modelsTitle: string;
+    modelsNote: string;
+    compareTitle: string;
+    applicationsTitle: string;
+    checklistTitle: string;
+    checklistNote: string;
+    otherTitle: string;
+  };
+  allCatalogButton: string;
+}

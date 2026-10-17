@@ -1,20 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
+import { routes } from "@/lib/routes";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "./Logo";
 
-const REQUEST_HREF = "/#contacts";
+const REQUEST_HREF = routes.contacts;
 
 /** Шапка сайта: логотип, навигация, телефон, кнопка заявки и мобильное меню. */
 export function Header() {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const { contacts, navigation } = site;
+  const pathname = usePathname();
+  // Пункт меню активен, если это страница (не якорь) и мы находимся в ней или в её подразделе.
+  const isActive = (href: string) => !href.includes("#") && pathname.startsWith(href.replace(/\/$/, ""));
 
   // Закрываем меню клавишей Escape и возвращаем фокус на кнопку меню.
   useEffect(() => {
@@ -52,7 +57,8 @@ export function Header() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="rounded-control px-3 py-2 text-[0.9375rem] font-medium text-steel-300 transition-colors duration-150 hover:text-white"
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className="rounded-control px-3 py-2 text-[0.9375rem] font-medium text-steel-300 transition-colors duration-150 hover:text-white aria-[current=page]:text-signal"
                 >
                   {link.label}
                 </Link>
@@ -100,7 +106,8 @@ export function Header() {
                   <Link
                     href={link.href}
                     onClick={close}
-                    className="flex items-center justify-between border-b border-white/10 py-4 text-lg font-semibold"
+                    aria-current={isActive(link.href) ? "page" : undefined}
+                    className="flex items-center justify-between border-b border-white/10 py-4 text-lg font-semibold aria-[current=page]:text-signal"
                   >
                     {link.label}
                     <Icon name="arrowRight" className="size-5 text-signal" />

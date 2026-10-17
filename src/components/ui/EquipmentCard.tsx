@@ -2,20 +2,21 @@ import Image from "next/image";
 import { getCategory } from "@/content/equipment";
 import { formatPrice, plural } from "@/lib/format";
 import { asset } from "@/lib/paths";
+import { routes } from "@/lib/routes";
 import type { Equipment } from "@/types/equipment";
 import { Badge } from "./Badge";
 import { ButtonLink } from "./Button";
 
 interface EquipmentCardProps {
   item: Equipment;
-  /** Куда ведёт кнопка. Пока страниц техники нет — к блоку контактов. */
+  /** Куда ведёт кнопка «Запросить аренду» — к блоку контактов. */
   href?: string;
   /** Сколько характеристик показать (по умолчанию 3). */
   maxSpecs?: number;
 }
 
 /** Карточка единицы техники: изображение, характеристики, цена и кнопка. */
-export function EquipmentCard({ item, href = "/#contacts", maxSpecs = 3 }: EquipmentCardProps) {
+export function EquipmentCard({ item, href = routes.contacts, maxSpecs = 3 }: EquipmentCardProps) {
   const category = getCategory(item.categoryId);
   const shifts = `${item.minOrderShifts} ${plural(item.minOrderShifts, ["смена", "смены", "смен"])}`;
 

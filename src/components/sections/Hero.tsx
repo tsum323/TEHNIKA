@@ -3,6 +3,7 @@ import { categories } from "@/content/equipment";
 import { home } from "@/content/home";
 import { site } from "@/content/site";
 import { asset } from "@/lib/paths";
+import { routes } from "@/lib/routes";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
@@ -36,7 +37,7 @@ export function Hero() {
           <p className="mt-6 max-w-xl text-lead text-steel-300">{home.hero.subtitle}</p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/#categories" size="lg">
+            <ButtonLink href={routes.catalog} size="lg">
               {home.hero.primaryButton}
               <Icon name="arrowRight" />
             </ButtonLink>

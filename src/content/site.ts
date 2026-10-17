@@ -108,7 +108,7 @@ export const site: SiteConfig = {
 
   // Каталог и форма заказа ещё не созданы, поэтому пункты ведут к блокам главной страницы.
   navigation: [
-    { label: "Техника", href: "/#categories" },
+    { label: "Каталог", href: "/catalog/" },
     { label: "Как мы работаем", href: "/#how-we-work" },
     { label: "География", href: "/#geography" },
     { label: "Вопросы", href: "/#faq" },

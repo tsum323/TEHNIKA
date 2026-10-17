@@ -1,6 +1,9 @@
+import { catalog } from "@/content/catalog";
 import { getFeaturedEquipment } from "@/content/equipment";
 import { home } from "@/content/home";
+import { routes } from "@/lib/routes";
 import { Badge } from "@/components/ui/Badge";
+import { ButtonLink } from "@/components/ui/Button";
 import { EquipmentCard } from "@/components/ui/EquipmentCard";
 import { Section, SectionHeading } from "@/components/ui/Section";
 
@@ -29,6 +32,11 @@ export function PopularEquipment() {
           </li>
         ))}
       </ul>
+      <div className="mt-10 flex justify-center">
+        <ButtonLink href={routes.catalog} variant="ghost" size="lg">
+          {catalog.allCatalogButton}
+        </ButtonLink>
+      </div>
     </Section>
   );
 }
