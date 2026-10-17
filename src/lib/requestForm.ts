@@ -1,4 +1,5 @@
 import { requestForm } from "@/content/form";
+import { isCompletePhone } from "@/lib/phone";
 import type { RequestFormErrors, RequestFormValues } from "@/types/form";
 
 export const COMMENT_MAX_LENGTH = 1000;
@@ -21,12 +22,6 @@ function today(): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-/** Российский номер: 10 цифр или 11 цифр, начинающихся с 7 или 8. */
-export function isValidPhone(phone: string): boolean {
-  const digits = phone.replace(/\D/g, "");
-  return digits.length === 10 || (digits.length === 11 && (digits.startsWith("7") || digits.startsWith("8")));
-}
-
 /** Проверяет форму и возвращает ошибки по полям. Пустой объект — ошибок нет. */
 export function validateRequestForm(values: RequestFormValues): RequestFormErrors {
   const { errors: text } = requestForm;
@@ -35,7 +30,7 @@ export function validateRequestForm(values: RequestFormValues): RequestFormError
   if (values.name.trim().length < 2) errors.name = text.nameRequired;
 
   if (!values.phone.trim()) errors.phone = text.phoneRequired;
-  else if (!isValidPhone(values.phone)) errors.phone = text.phoneInvalid;
+  else if (!isCompletePhone(values.phone)) errors.phone = text.phoneInvalid;
 
   if (!values.category) errors.category = text.categoryRequired;
 
