@@ -40,6 +40,8 @@ export interface SiteConfig {
   workSteps: WorkStep[];
   faq: FaqItem[];
   navigation: NavLink[];
+  /** Подпись кнопки «Наверх» (видна скринридерам и во всплывающей подсказке). */
+  backToTop: string;
 }
 
 /** Заголовок секции: надпись над заголовком, заголовок и описание. */
