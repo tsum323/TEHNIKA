@@ -78,7 +78,8 @@ export function Footer() {
       </Container>
 
       <div className="border-t border-white/10">
-        <Container className="flex flex-col gap-2 py-6 text-sm text-muted-inverse md:flex-row md:justify-between">
+        {/* Снизу оставляем место под кнопку «Наверх», чтобы она не закрывала текст */}
+        <Container className="flex flex-col gap-2 pt-6 pb-24 text-sm text-muted-inverse md:flex-row md:justify-between">
           <p>
             © {year} {site.name}
           </p>

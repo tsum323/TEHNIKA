@@ -107,6 +107,8 @@ export const site: SiteConfig = {
   ],
 
   // Каталог и форма заказа ещё не созданы, поэтому пункты ведут к блокам главной страницы.
+  backToTop: "Наверх",
+
   navigation: [
     { label: "Каталог", href: "/catalog/" },
     { label: "Как мы работаем", href: "/#how-we-work" },
