@@ -70,6 +70,20 @@ export interface HomeContent {
 }
 
 /** Тексты страниц каталога. */
+/** Тексты строки поиска по каталогу. */
+export interface CatalogSearchText {
+  label: string;
+  placeholder: string;
+  clearButton: string;
+  categoryLabel: string;
+  examplesLabel: string;
+  /** Быстрые запросы под полем. */
+  examples: string[];
+  emptyTitle: string;
+  emptyText: string;
+  emptyLink: string;
+}
+
 export interface CatalogContent {
   index: SectionText;
   category: {
@@ -82,6 +96,7 @@ export interface CatalogContent {
     otherTitle: string;
   };
   allCatalogButton: string;
+  search: CatalogSearchText;
   equipment: {
     eyebrow: string;
     detailsButton: string;

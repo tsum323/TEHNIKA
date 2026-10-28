@@ -22,6 +22,17 @@ export const catalog: CatalogContent = {
     otherTitle: "Другие категории",
   },
   allCatalogButton: "Весь каталог",
+  search: {
+    label: "Поиск по каталогу",
+    placeholder: "Например: кран 25 т, самосвал, котлован",
+    clearButton: "Очистить поиск",
+    categoryLabel: "Категория",
+    examplesLabel: "Часто ищут:",
+    examples: ["Экскаватор", "Автокран", "Самосвал", "Каток"],
+    emptyTitle: "Ничего не нашлось",
+    emptyText: "Попробуйте другое слово или опишите задачу менеджеру — подберём технику.",
+    emptyLink: "Оставить заявку",
+  },
   equipment: {
     eyebrow: "Аренда техники",
     detailsButton: "Подробнее",
