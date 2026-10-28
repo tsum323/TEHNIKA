@@ -8,7 +8,7 @@ import { EmptyState, PageHeader, rowButtonClass } from "@/components/ui/Page";
 import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { db } from "@/lib/db";
-import { requestMoney, shiftMarkup } from "@/lib/finance";
+import { requestMoney, hourMarkup } from "@/lib/finance";
 import { formatMoney, formatPercent } from "@/lib/format";
 import { nextPhoneValue } from "@/lib/phone";
 import type { Supplier } from "@/types/db";
@@ -137,15 +137,15 @@ function SupplierDialog({ item, onClose }: { item: Supplier | null; onClose(): v
             <ul className="mt-3 divide-y divide-border rounded-control bg-white text-sm">
               {offers.map((offer) => {
                 const equipment = data.equipment.find((e) => e.id === offer.equipment_id);
-                const m = equipment ? shiftMarkup(equipment.client_price_per_shift, offer.cost_per_shift) : null;
+                const m = equipment ? hourMarkup(equipment.client_price_per_hour, offer.cost_per_hour) : null;
                 return (
                   <li key={offer.id} className="flex flex-wrap justify-between gap-2 px-3 py-2.5">
                     <span className="font-semibold">{equipment?.name ?? "?"}</span>
                     <span className="tabular-nums">
-                      берём за {formatMoney(offer.cost_per_shift)}
+                      берём за {formatMoney(offer.cost_per_hour)}/ч
                       {m && (
                         <>
-                          , сдаём за {formatMoney(equipment!.client_price_per_shift)} —{" "}
+                          , сдаём за {formatMoney(equipment!.client_price_per_hour)}/ч —{" "}
                           <strong className={m.diff >= 0 ? "text-success" : "text-error"}>{formatMoney(m.diff)}</strong>
                           {m.markup != null && <> ({formatPercent(m.markup)})</>}
                         </>

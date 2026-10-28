@@ -14,6 +14,7 @@ import type { CategoryId, Equipment, EquipmentCategory } from "@/types/equipment
 export const categories: EquipmentCategory[] = [
   {
     id: "excavators",
+    minOrderHours: 4,
     searchKeywords: [
       "экскаватор",
       "гусеничный",
@@ -50,6 +51,7 @@ export const categories: EquipmentCategory[] = [
   },
   {
     id: "backhoe-loaders",
+    minOrderHours: 2,
     searchKeywords: [
       "экскаватор-погрузчик",
       "погрузчик",
@@ -84,6 +86,7 @@ export const categories: EquipmentCategory[] = [
   },
   {
     id: "truck-cranes",
+    minOrderHours: 4,
     searchKeywords: [
       "кран",
       "автокран",
@@ -117,6 +120,7 @@ export const categories: EquipmentCategory[] = [
   },
   {
     id: "dump-trucks",
+    minOrderHours: 8,
     searchKeywords: [
       "самосвал",
       "КАМАЗ",
@@ -150,6 +154,7 @@ export const categories: EquipmentCategory[] = [
   },
   {
     id: "rollers",
+    minOrderHours: 8,
     searchKeywords: [
       "каток",
       "асфальт",
@@ -181,6 +186,7 @@ export const categories: EquipmentCategory[] = [
   },
   {
     id: "wheel-loaders",
+    minOrderHours: 2,
     searchKeywords: [
       "фронтальный погрузчик",
       "фронтальник",
@@ -224,8 +230,7 @@ export const equipment: Equipment[] = [
       { label: "Глубина копания", value: "6,5 м" },
       { label: "Ход", value: "Гусеничный" },
     ],
-    pricePerShift: 25000,
-    minOrderShifts: 1,
+    pricePerHour: 2800,
     image: "/placeholders/excavator.svg",
     imageAlt: "Заглушка: гусеничный экскаватор",
     featured: true,
@@ -241,8 +246,7 @@ export const equipment: Equipment[] = [
       { label: "Глубина копания", value: "5,5 м" },
       { label: "Ход", value: "Колёсный" },
     ],
-    pricePerShift: 22000,
-    minOrderShifts: 1,
+    pricePerHour: 2500,
     image: "/placeholders/excavator.svg",
     imageAlt: "Заглушка: колёсный экскаватор",
     isDemo: true,
@@ -259,8 +263,7 @@ export const equipment: Equipment[] = [
       { label: "Ковш экскаватора", value: "0,2 м³" },
       { label: "Глубина копания", value: "4,2 м" },
     ],
-    pricePerShift: 16000,
-    minOrderShifts: 1,
+    pricePerHour: 1800,
     image: "/placeholders/backhoe-loader.svg",
     imageAlt: "Заглушка: экскаватор-погрузчик",
     featured: true,
@@ -275,8 +278,7 @@ export const equipment: Equipment[] = [
       { label: "Навесное", value: "Гидромолот" },
       { label: "Ковш погрузчика", value: "1,1 м³" },
     ],
-    pricePerShift: 19000,
-    minOrderShifts: 1,
+    pricePerHour: 2200,
     image: "/placeholders/backhoe-loader.svg",
     imageAlt: "Заглушка: экскаватор-погрузчик с гидромолотом",
     isDemo: true,
@@ -292,8 +294,7 @@ export const equipment: Equipment[] = [
       { label: "Длина стрелы", value: "28 м" },
       { label: "Колёсная формула", value: "6×4" },
     ],
-    pricePerShift: 28000,
-    minOrderShifts: 1,
+    pricePerHour: 2500,
     image: "/placeholders/truck-crane.svg",
     imageAlt: "Заглушка: автокран 25 тонн",
     featured: true,
@@ -309,8 +310,7 @@ export const equipment: Equipment[] = [
       { label: "Колёсная формула", value: "8×4" },
       { label: "Гусёк", value: "Есть" },
     ],
-    pricePerShift: 45000,
-    minOrderShifts: 1,
+    pricePerHour: 4500,
     image: "/placeholders/truck-crane.svg",
     imageAlt: "Заглушка: автокран 50 тонн",
     isDemo: true,
@@ -326,8 +326,7 @@ export const equipment: Equipment[] = [
       { label: "Грузоподъёмность", value: "25 т" },
       { label: "Колёсная формула", value: "6×4" },
     ],
-    pricePerShift: 18000,
-    minOrderShifts: 1,
+    pricePerHour: 2000,
     image: "/placeholders/dump-truck.svg",
     imageAlt: "Заглушка: самосвал 20 кубометров",
     featured: true,
@@ -342,8 +341,7 @@ export const equipment: Equipment[] = [
       { label: "Грузоподъёмность", value: "15 т" },
       { label: "Колёсная формула", value: "6×6" },
     ],
-    pricePerShift: 15000,
-    minOrderShifts: 1,
+    pricePerHour: 1700,
     image: "/placeholders/dump-truck.svg",
     imageAlt: "Заглушка: самосвал 10 кубометров",
     isDemo: true,
@@ -360,8 +358,7 @@ export const equipment: Equipment[] = [
       { label: "Тип вальца", value: "Гладкий" },
       { label: "Вибрация", value: "Есть" },
     ],
-    pricePerShift: 17000,
-    minOrderShifts: 1,
+    pricePerHour: 2000,
     image: "/placeholders/roller.svg",
     imageAlt: "Заглушка: грунтовый каток",
     featured: true,
@@ -376,8 +373,7 @@ export const equipment: Equipment[] = [
       { label: "Ширина вальца", value: "1,3 м" },
       { label: "Вальцы", value: "Два" },
     ],
-    pricePerShift: 14000,
-    minOrderShifts: 1,
+    pricePerHour: 1700,
     image: "/placeholders/roller.svg",
     imageAlt: "Заглушка: тандемный асфальтовый каток",
     isDemo: true,
@@ -393,8 +389,7 @@ export const equipment: Equipment[] = [
       { label: "Грузоподъёмность", value: "5 т" },
       { label: "Высота выгрузки", value: "3,1 м" },
     ],
-    pricePerShift: 20000,
-    minOrderShifts: 1,
+    pricePerHour: 2200,
     image: "/placeholders/wheel-loader.svg",
     imageAlt: "Заглушка: фронтальный погрузчик",
     featured: true,
@@ -409,8 +404,7 @@ export const equipment: Equipment[] = [
       { label: "Грузоподъёмность", value: "1 т" },
       { label: "Ширина", value: "1,7 м" },
     ],
-    pricePerShift: 12000,
-    minOrderShifts: 2,
+    pricePerHour: 1500,
     image: "/placeholders/wheel-loader.svg",
     imageAlt: "Заглушка: мини-погрузчик",
     isDemo: true,
@@ -432,10 +426,15 @@ export function getEquipmentByCategory(id: CategoryId): Equipment[] {
   return equipment.filter((item) => item.categoryId === id);
 }
 
-/** Минимальная цена за смену в категории (для подписи «от N ₽»). */
+/** Минимальная цена за час в категории (для подписи «от N ₽»). */
 export function getMinPrice(id: CategoryId): number | undefined {
-  const prices = getEquipmentByCategory(id).map((item) => item.pricePerShift);
+  const prices = getEquipmentByCategory(id).map((item) => item.pricePerHour);
   return prices.length > 0 ? Math.min(...prices) : undefined;
+}
+
+/** Минимальный заказ машины в часах: свой у машины, иначе у категории, иначе 1 час. */
+export function getMinOrderHours(item: Equipment): number {
+  return item.minOrderHours ?? getCategory(item.categoryId)?.minOrderHours ?? 1;
 }
 
 /** Техника для блока «Популярная техника» на главной. */

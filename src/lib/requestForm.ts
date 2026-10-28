@@ -11,7 +11,7 @@ export const emptyRequestForm: RequestFormValues = {
   equipment: "",
   address: "",
   startDate: "",
-  shifts: "",
+  hours: "",
   comment: "",
 };
 
@@ -37,9 +37,9 @@ export function validateRequestForm(values: RequestFormValues): RequestFormError
   // Строки вида "2026-10-17" сравниваются как даты.
   if (values.startDate && values.startDate < today()) errors.startDate = text.startDatePast;
 
-  if (values.shifts.trim()) {
-    const shifts = Number(values.shifts);
-    if (!Number.isInteger(shifts) || shifts < 1 || shifts > 365) errors.shifts = text.shiftsInvalid;
+  if (values.hours.trim()) {
+    const hours = Number(values.hours);
+    if (!Number.isInteger(hours) || hours < 1 || hours > 2000) errors.hours = text.hoursInvalid;
   }
 
   if (values.comment.length > COMMENT_MAX_LENGTH) errors.comment = text.commentTooLong;

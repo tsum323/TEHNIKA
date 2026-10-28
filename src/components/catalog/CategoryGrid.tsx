@@ -20,7 +20,7 @@ export function CategoryGrid({ exclude }: CategoryGridProps) {
         const minPrice = getMinPrice(category.id);
         const meta = [
           `${count} ${plural(count, ["модель", "модели", "моделей"])}`,
-          minPrice !== undefined ? `от ${formatPrice(minPrice)}` : null,
+          minPrice !== undefined ? `от ${formatPrice(minPrice)}/час` : null,
         ]
           .filter(Boolean)
           .join(" · ");

@@ -92,9 +92,9 @@ create table if not exists public.equipment (
   category text not null check (category in
     ('excavators', 'backhoe-loaders', 'truck-cranes', 'dump-trucks', 'rollers', 'wheel-loaders')),
   specs text not null default '',
-  -- Цена для клиента за смену
-  client_price_per_shift numeric(12, 2) not null default 0 check (client_price_per_shift >= 0),
-  min_shifts integer not null default 1 check (min_shifts > 0),
+  -- Цена для клиента за час и минимальный заказ в часах
+  client_price_per_hour numeric(12, 2) not null default 0 check (client_price_per_hour >= 0),
+  min_hours integer not null default 1 check (min_hours > 0),
   is_active boolean not null default true,
   notes text not null default '',
   created_at timestamptz not null default now(),
@@ -106,7 +106,8 @@ create table if not exists public.supplier_offers (
   id uuid primary key default gen_random_uuid(),
   equipment_id uuid not null references public.equipment (id) on delete cascade,
   supplier_id uuid not null references public.suppliers (id) on delete cascade,
-  cost_per_shift numeric(12, 2) not null check (cost_per_shift >= 0),
+  -- Закупочная цена за час
+  cost_per_hour numeric(12, 2) not null check (cost_per_hour >= 0),
   notes text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -138,9 +139,10 @@ create table if not exists public.requests (
   equipment_id uuid references public.equipment (id) on delete set null,
   address text not null default '',
   start_date date,
-  shifts integer check (shifts > 0),
-  -- Цена для клиента за смену по этой заявке
-  client_price_per_shift numeric(12, 2) check (client_price_per_shift >= 0),
+  -- Количество часов работы
+  hours integer check (hours > 0),
+  -- Цена для клиента за час по этой заявке
+  client_price_per_hour numeric(12, 2) check (client_price_per_hour >= 0),
   status public.request_status not null default 'new',
   comment text not null default '',
   created_by uuid references public.profiles (id) on delete set null default auth.uid(),
@@ -152,12 +154,34 @@ create table if not exists public.requests (
 create table if not exists public.request_costs (
   request_id uuid primary key references public.requests (id) on delete cascade,
   supplier_id uuid references public.suppliers (id) on delete set null,
-  cost_per_shift numeric(12, 2) not null default 0 check (cost_per_shift >= 0),
+  -- Закупочная цена за час
+  cost_per_hour numeric(12, 2) not null default 0 check (cost_per_hour >= 0),
   -- Доставка, топливо и прочие разовые расходы
   extra_costs numeric(12, 2) not null default 0 check (extra_costs >= 0),
   notes text not null default '',
   updated_at timestamptz not null default now()
 );
+
+-- ---------- Переход со смен на часы (добавлено в задании «Почасовая оплата») ----------
+-- В базах, созданных раньше, колонки назывались *_per_shift / shifts. Переименовываем их.
+-- Значения не пересчитываются: цены за смену нужно заново ввести как цены за час.
+do $$
+declare r record;
+begin
+  for r in select * from (values
+    ('equipment', 'client_price_per_shift', 'client_price_per_hour'),
+    ('equipment', 'min_shifts', 'min_hours'),
+    ('supplier_offers', 'cost_per_shift', 'cost_per_hour'),
+    ('requests', 'shifts', 'hours'),
+    ('requests', 'client_price_per_shift', 'client_price_per_hour'),
+    ('request_costs', 'cost_per_shift', 'cost_per_hour')
+  ) as t(tbl, old_name, new_name) loop
+    if exists (select 1 from information_schema.columns
+               where table_schema = 'public' and table_name = r.tbl and column_name = r.old_name) then
+      execute format('alter table public.%I rename column %I to %I', r.tbl, r.old_name, r.new_name);
+    end if;
+  end loop;
+end $$;
 
 -- updated_at
 do $$
@@ -276,7 +300,7 @@ create policy payments_delete on public.payments for delete to authenticated
 
 -- =====================================================================
 -- КАЛЕНДАРЬ ЗАНЯТОСТИ (добавлено в задании «Календарь»)
--- Дата окончания аренды. Если не указана, считается как дата начала + смены − 1.
+-- Дата окончания аренды. Если не указана, считается по часам: 8 часов работы = 1 день.
 -- =====================================================================
 alter table public.requests add column if not exists end_date date;
 

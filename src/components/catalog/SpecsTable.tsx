@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { formatPrice, plural } from "@/lib/format";
+import { getMinOrderHours } from "@/content/equipment";
+import { formatHours, formatPrice } from "@/lib/format";
 import { equipmentHref } from "@/lib/routes";
 import type { Equipment } from "@/types/equipment";
 
@@ -21,11 +22,8 @@ export function SpecsTable({ items, caption }: SpecsTableProps) {
       label,
       values: items.map((item) => item.specs.find((spec) => spec.label === label)?.value ?? "—"),
     })),
-    { label: "Цена за смену", values: items.map((item) => `от ${formatPrice(item.pricePerShift)}`) },
-    {
-      label: "Минимальный заказ",
-      values: items.map((item) => `${item.minOrderShifts} ${plural(item.minOrderShifts, ["смена", "смены", "смен"])}`),
-    },
+    { label: "Цена за час", values: items.map((item) => `от ${formatPrice(item.pricePerHour)}`) },
+    { label: "Минимальный заказ", values: items.map((item) => formatHours(getMinOrderHours(item))) },
   ];
 
   return (

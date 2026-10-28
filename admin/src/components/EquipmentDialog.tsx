@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { db } from "@/lib/db";
-import { shiftMarkup } from "@/lib/finance";
+import { hourMarkup } from "@/lib/finance";
 import { formatMoney, formatPercent, parseNumber } from "@/lib/format";
 import { categoryLabels, toOptions } from "@/lib/labels";
 import type { CategoryId, Equipment } from "@/types/db";
@@ -25,8 +25,8 @@ export function EquipmentDialog({ item, onClose }: Props) {
     name: item?.name ?? "",
     category: (item?.category ?? "excavators") as CategoryId,
     specs: item?.specs ?? "",
-    client_price_per_shift: item ? String(item.client_price_per_shift) : "",
-    min_shifts: item ? String(item.min_shifts) : "1",
+    client_price_per_hour: item ? String(item.client_price_per_hour) : "",
+    min_hours: item ? String(item.min_hours) : "1",
     is_active: item?.is_active ?? true,
     notes: item?.notes ?? "",
   });
@@ -35,14 +35,14 @@ export function EquipmentDialog({ item, onClose }: Props) {
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((p) => ({ ...p, [k]: v }));
 
   async function save() {
-    const price = parseNumber(form.client_price_per_shift);
-    const minShifts = parseNumber(form.min_shifts);
+    const price = parseNumber(form.client_price_per_hour);
+    const minHours = parseNumber(form.min_hours);
     if (!form.name.trim()) return setError("Укажите название техники.");
     if (price == null || price < 0) return setError("Укажите цену для клиента числом.");
-    if (minShifts == null || !Number.isInteger(minShifts) || minShifts < 1) return setError("Минимальный срок — целое число смен от 1.");
+    if (minHours == null || !Number.isInteger(minHours) || minHours < 1) return setError("Минимальный заказ — целое число часов от 1.");
     setSaving(true);
     setError(null);
-    const row = { ...form, name: form.name.trim(), client_price_per_shift: price, min_shifts: minShifts };
+    const row = { ...form, name: form.name.trim(), client_price_per_hour: price, min_hours: minHours };
     try {
       if (item) await db.update("equipment", { id: item.id }, row);
       else await db.insert("equipment", row);
@@ -65,7 +65,7 @@ export function EquipmentDialog({ item, onClose }: Props) {
     }
   }
 
-  const clientPrice = parseNumber(form.client_price_per_shift) ?? 0;
+  const clientPrice = parseNumber(form.client_price_per_hour) ?? 0;
 
   return (
     <Dialog
@@ -94,8 +94,8 @@ export function EquipmentDialog({ item, onClose }: Props) {
           <TextField label="Название" value={form.name} onChange={(e) => set("name", e.target.value)} required className="sm:col-span-2" />
           <SelectField label="Категория" options={toOptions(categoryLabels)} value={form.category} onChange={(e) => set("category", e.target.value as CategoryId)} />
           <TextField label="Характеристики" value={form.specs} onChange={(e) => set("specs", e.target.value)} placeholder="Масса, ковш, стрела…" />
-          <TextField label="Цена для клиента за смену, ₽" type="number" inputMode="decimal" min={0} value={form.client_price_per_shift} onChange={(e) => set("client_price_per_shift", e.target.value)} required />
-          <TextField label="Минимальный срок, смен" type="number" inputMode="numeric" min={1} value={form.min_shifts} onChange={(e) => set("min_shifts", e.target.value)} />
+          <TextField label="Цена для клиента за час, ₽" type="number" inputMode="decimal" min={0} value={form.client_price_per_hour} onChange={(e) => set("client_price_per_hour", e.target.value)} required />
+          <TextField label="Минимальный заказ, часов" type="number" inputMode="numeric" min={1} value={form.min_hours} onChange={(e) => set("min_hours", e.target.value)} />
           <TextAreaField label="Заметки" value={form.notes} onChange={(e) => set("notes", e.target.value)} className="sm:col-span-2" />
           <CheckboxField label="Сдаём в аренду (активна)" checked={form.is_active} onChange={(v) => set("is_active", v)} />
         </div>
@@ -110,7 +110,7 @@ export function EquipmentDialog({ item, onClose }: Props) {
 /** Закупочные цены по этой технике у разных поставщиков. */
 function Offers({ equipmentId, clientPrice }: { equipmentId: string; clientPrice: number }) {
   const { data, refresh } = useData();
-  const offers = data.supplier_offers.filter((o) => o.equipment_id === equipmentId).sort((a, b) => a.cost_per_shift - b.cost_per_shift);
+  const offers = data.supplier_offers.filter((o) => o.equipment_id === equipmentId).sort((a, b) => a.cost_per_hour - b.cost_per_hour);
   const free = data.suppliers.filter((s) => !offers.some((o) => o.supplier_id === s.id));
   const [supplierId, setSupplierId] = useState("");
   const [cost, setCost] = useState("");
@@ -120,7 +120,7 @@ function Offers({ equipmentId, clientPrice }: { equipmentId: string; clientPrice
     const value = parseNumber(cost);
     if (!supplierId || value == null || value < 0) return setOfferError("Выберите поставщика и укажите цену числом.");
     try {
-      await db.insert("supplier_offers", { equipment_id: equipmentId, supplier_id: supplierId, cost_per_shift: value });
+      await db.insert("supplier_offers", { equipment_id: equipmentId, supplier_id: supplierId, cost_per_hour: value });
       await refresh(["supplier_offers"]);
       setSupplierId("");
       setCost("");
@@ -142,14 +142,14 @@ function Offers({ equipmentId, clientPrice }: { equipmentId: string; clientPrice
         <ul className="mt-3 divide-y divide-border rounded-control bg-white">
           {offers.map((offer, index) => {
             const supplier = data.suppliers.find((s) => s.id === offer.supplier_id);
-            const m = shiftMarkup(clientPrice, offer.cost_per_shift);
+            const m = hourMarkup(clientPrice, offer.cost_per_hour);
             return (
               <li key={offer.id} className="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5 text-sm">
                 <span className="font-semibold">
                   {supplier?.name ?? "?"} {index === 0 && <span className="ml-1 text-xs font-bold text-success">дешевле всех</span>}
                 </span>
                 <span className="tabular-nums">
-                  {formatMoney(offer.cost_per_shift)} → наша разница{" "}
+                  {formatMoney(offer.cost_per_hour)}/ч → наша разница{" "}
                   <strong className={m.diff >= 0 ? "text-success" : "text-error"}>{formatMoney(m.diff)}</strong>
                   {m.markup != null && <> ({formatPercent(m.markup)})</>}
                 </span>
@@ -166,7 +166,7 @@ function Offers({ equipmentId, clientPrice }: { equipmentId: string; clientPrice
       {free.length > 0 && (
         <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_10rem_auto] sm:items-end">
           <SelectField label="Поставщик" placeholder="— выберите —" options={free.map((s) => ({ value: s.id, label: s.name }))} value={supplierId} onChange={(e) => setSupplierId(e.target.value)} />
-          <TextField label="Цена за смену, ₽" type="number" inputMode="decimal" min={0} value={cost} onChange={(e) => setCost(e.target.value)} />
+          <TextField label="Цена за час, ₽" type="number" inputMode="decimal" min={0} value={cost} onChange={(e) => setCost(e.target.value)} />
           <Button variant="secondary" onClick={() => void add()}>
             Добавить
           </Button>

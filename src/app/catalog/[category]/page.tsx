@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { catalog } from "@/content/catalog";
 import { categories, getCategory, getEquipmentByCategory, getMinPrice } from "@/content/equipment";
-import { formatPrice } from "@/lib/format";
+import { formatHours, formatPrice } from "@/lib/format";
 import { routes } from "@/lib/routes";
 import { CategoryGrid } from "@/components/catalog/CategoryGrid";
 import { SpecsTable } from "@/components/catalog/SpecsTable";
@@ -62,8 +62,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               <dd className="mt-1 text-2xl font-extrabold">{items.length}</dd>
             </div>
             <div className="bg-graphite-800 p-5">
-              <dt className="text-sm text-muted-inverse">Цена за смену</dt>
+              <dt className="text-sm text-muted-inverse">Цена за час</dt>
               <dd className="mt-1 text-2xl font-extrabold">{minPrice !== undefined ? `от ${formatPrice(minPrice)}` : "—"}</dd>
+            </div>
+            <div className="col-span-2 bg-graphite-800 p-5">
+              <dt className="text-sm text-muted-inverse">Минимальный заказ</dt>
+              <dd className="mt-1 text-2xl font-extrabold">{formatHours(category.minOrderHours ?? 1)}</dd>
             </div>
             <div className="col-span-2 bg-graphite-800 p-5">
               <ButtonLink href="#contacts" fullWidth>
