@@ -26,6 +26,8 @@ export interface EquipmentCategory {
   applications: string[];
   /** Что уточнить при заявке — помогает быстрее подобрать машину. */
   requestChecklist: string[];
+  /** Дополнительные слова для поиска: разговорные названия, марки, задачи. */
+  searchKeywords?: string[];
   /** Путь к изображению от папки public/, например "/placeholders/excavator.svg". */
   image: string;
   /** Текст для alt изображения. */
