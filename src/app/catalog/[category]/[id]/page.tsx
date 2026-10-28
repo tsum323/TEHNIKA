@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { catalog } from "@/content/catalog";
-import { equipment, getCategory, getEquipment, getEquipmentByCategory } from "@/content/equipment";
+import { equipment, getCategory, getEquipment, getEquipmentByCategory, getMinOrderHours } from "@/content/equipment";
 import { site } from "@/content/site";
-import { formatPrice, plural } from "@/lib/format";
+import { formatHours, formatPrice } from "@/lib/format";
 import { asset } from "@/lib/paths";
 import { categoryHref, routes } from "@/lib/routes";
 import { ContactCta } from "@/components/sections/ContactCta";
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: EquipmentPageProps): Promise<
   const specs = item.specs.map((spec) => `${spec.label.toLowerCase()} ${spec.value}`).join(", ");
   return {
     title: `${item.name} — аренда`,
-    description: `Аренда: ${item.name}. ${specs}. Цена от ${formatPrice(item.pricePerShift)} за смену.`,
+    description: `Аренда: ${item.name}. ${specs}. Цена от ${formatPrice(item.pricePerHour)} за час.`,
   };
 }
 
@@ -47,7 +47,7 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
 
   const texts = catalog.equipment;
   const others = getEquipmentByCategory(category.id).filter((other) => other.id !== item.id);
-  const shifts = `${item.minOrderShifts} ${plural(item.minOrderShifts, ["смена", "смены", "смен"])}`;
+  const minOrder = formatHours(getMinOrderHours(item));
   const description = item.description ?? category.intro[0];
 
   return (
@@ -86,12 +86,12 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
 
               <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-white/10 bg-white/10">
                 <div className="bg-graphite-800 p-5">
-                  <dt className="text-sm text-muted-inverse">Цена за смену</dt>
-                  <dd className="mt-1 text-xl font-extrabold whitespace-nowrap sm:text-2xl">от {formatPrice(item.pricePerShift)}</dd>
+                  <dt className="text-sm text-muted-inverse">Цена за час</dt>
+                  <dd className="mt-1 text-xl font-extrabold whitespace-nowrap sm:text-2xl">от {formatPrice(item.pricePerHour)}</dd>
                 </div>
                 <div className="bg-graphite-800 p-5">
                   <dt className="text-sm text-muted-inverse">Минимальный заказ</dt>
-                  <dd className="mt-1 text-xl font-extrabold sm:text-2xl">{shifts}</dd>
+                  <dd className="mt-1 text-xl font-extrabold sm:text-2xl">{minOrder}</dd>
                 </div>
               </dl>
               <p className="mt-3 text-sm text-muted-inverse">{texts.priceNote}</p>

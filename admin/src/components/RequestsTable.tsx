@@ -26,7 +26,7 @@ export function RequestsTable({ requests, onOpen }: { requests: RentalRequest[];
             <th scope="col" className="px-4 py-3">Клиент</th>
             <th scope="col" className="px-4 py-3">Техника</th>
             <th scope="col" className="px-4 py-3">Начало</th>
-            <th scope="col" className="px-4 py-3 text-right">Смен</th>
+            <th scope="col" className="px-4 py-3 text-right">Часов</th>
             <th scope="col" className="px-4 py-3 text-right">Сумма</th>
             {isOwner && <th scope="col" className="px-4 py-3 text-right">Прибыль</th>}
             <th scope="col" className="px-4 py-3">Статус</th>
@@ -49,7 +49,7 @@ export function RequestsTable({ requests, onOpen }: { requests: RentalRequest[];
                 </td>
                 <td className="px-4 py-3">{equipmentName(request.equipment_id)}</td>
                 <td className="px-4 py-3 whitespace-nowrap tabular-nums">{formatDate(request.start_date)}</td>
-                <td className="px-4 py-3 text-right tabular-nums">{request.shifts ?? "—"}</td>
+                <td className="px-4 py-3 text-right tabular-nums">{request.hours ?? "—"}</td>
                 <td className="px-4 py-3 text-right whitespace-nowrap tabular-nums">{money.revenue != null ? formatMoney(money.revenue) : "—"}</td>
                 {isOwner && (
                   <td className={cn("px-4 py-3 text-right whitespace-nowrap font-semibold tabular-nums", money.profit != null && (money.profit >= 0 ? "text-success" : "text-error"))}>

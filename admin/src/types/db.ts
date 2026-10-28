@@ -44,20 +44,20 @@ export interface Equipment {
   name: string;
   category: CategoryId;
   specs: string;
-  /** Цена для клиента за смену. */
-  client_price_per_shift: number;
-  min_shifts: number;
+  /** Цена для клиента за час. */
+  client_price_per_hour: number;
+  min_hours: number;
   is_active: boolean;
   notes: string;
   created_at: string;
 }
 
-/** Закупочная цена: сколько стоит смена этой техники у поставщика. Только владелец. */
+/** Закупочная цена: сколько стоит час работы этой техники у поставщика. Только владелец. */
 export interface SupplierOffer {
   id: string;
   equipment_id: string;
   supplier_id: string;
-  cost_per_shift: number;
+  cost_per_hour: number;
   notes: string;
   created_at: string;
 }
@@ -83,10 +83,10 @@ export interface RentalRequest {
   equipment_id: string | null;
   address: string;
   start_date: string | null;
-  /** Дата окончания аренды. null — считается по количеству смен. */
+  /** Дата окончания аренды. null — считается по количеству часов (8 часов = 1 день). */
   end_date: string | null;
-  shifts: number | null;
-  client_price_per_shift: number | null;
+  hours: number | null;
+  client_price_per_hour: number | null;
   status: RequestStatus;
   comment: string;
   created_by: string | null;
@@ -97,7 +97,7 @@ export interface RentalRequest {
 export interface RequestCost {
   request_id: string;
   supplier_id: string | null;
-  cost_per_shift: number;
+  cost_per_hour: number;
   extra_costs: number;
   notes: string;
 }

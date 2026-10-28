@@ -6,7 +6,7 @@ export interface RequestFormValues {
   equipment: string;
   address: string;
   startDate: string;
-  shifts: string;
+  hours: string;
   comment: string;
 }
 
@@ -32,7 +32,7 @@ export interface RequestFormContent {
     phoneInvalid: string;
     categoryRequired: string;
     startDatePast: string;
-    shiftsInvalid: string;
+    hoursInvalid: string;
     commentTooLong: string;
   };
   success: {

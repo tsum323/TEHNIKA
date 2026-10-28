@@ -23,7 +23,7 @@ export default function EquipmentPage() {
     <>
       <PageHeader
         title="Техника"
-        description={isOwner ? "Цены для клиентов и закупочные цены поставщиков: сколько зарабатываем на каждой смене." : "Техника и цены для клиентов."}
+        description={isOwner ? "Цены для клиентов и закупочные цены поставщиков: сколько зарабатываем на каждом часе работы." : "Техника и цены для клиентов."}
         actions={<Button onClick={() => setEditing({ item: null, key: Date.now() })}>Добавить технику</Button>}
       />
       {list.length === 0 ? (
@@ -35,11 +35,11 @@ export default function EquipmentPage() {
               <tr>
                 <th scope="col" className="px-4 py-3">Техника</th>
                 <th scope="col" className="px-4 py-3">Категория</th>
-                <th scope="col" className="px-4 py-3 text-right">Цена клиенту</th>
+                <th scope="col" className="px-4 py-3 text-right">Цена клиенту за час</th>
                 {isOwner && (
                   <>
                     <th scope="col" className="px-4 py-3 text-right">Лучшая закупка</th>
-                    <th scope="col" className="px-4 py-3 text-right">Разница за смену</th>
+                    <th scope="col" className="px-4 py-3 text-right">Разница за час</th>
                     <th scope="col" className="px-4 py-3 text-right">Наценка</th>
                   </>
                 )}
@@ -58,10 +58,13 @@ export default function EquipmentPage() {
                       {item.specs && <p className="text-xs text-muted">{item.specs}</p>}
                     </td>
                     <td className="px-4 py-3">{categoryLabels[item.category]}</td>
-                    <td className="px-4 py-3 text-right whitespace-nowrap tabular-nums">{formatMoney(item.client_price_per_shift)}</td>
+                    <td className="px-4 py-3 text-right whitespace-nowrap tabular-nums">
+                      {formatMoney(item.client_price_per_hour)}
+                      {item.min_hours > 1 && <p className="text-xs text-muted">мин. {item.min_hours} ч</p>}
+                    </td>
                     {isOwner && (
                       <>
-                        <td className="px-4 py-3 text-right whitespace-nowrap tabular-nums">{m ? formatMoney(m.offer.cost_per_shift) : <span className="text-muted">нет цены</span>}</td>
+                        <td className="px-4 py-3 text-right whitespace-nowrap tabular-nums">{m ? formatMoney(m.offer.cost_per_hour) : <span className="text-muted">нет цены</span>}</td>
                         <td className={cn("px-4 py-3 text-right whitespace-nowrap font-semibold tabular-nums", m && (m.diff >= 0 ? "text-success" : "text-error"))}>
                           {m ? formatMoney(m.diff) : "—"}
                         </td>

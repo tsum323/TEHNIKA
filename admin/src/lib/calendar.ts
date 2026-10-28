@@ -4,7 +4,8 @@ import type { RentalRequest, RequestStatus } from "@/types/db";
  * Календарь занятости техники.
  *
  * Аренда длится с даты начала по дату окончания включительно.
- * Если дата окончания не указана — считаем «1 смена = 1 день»: начало + смены − 1.
+ * Если дата окончания не указана — считаем по часам: 8 часов работы = 1 день (смена),
+ * то есть начало + ⌈часы / 8⌉ − 1.
  */
 
 /** Твёрдая бронь. */
@@ -37,14 +38,17 @@ export function todayDay(): string {
   return formatDay(new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())));
 }
 
-/** Дата окончания по умолчанию: начало + смены − 1. */
-export function defaultEndDate(start: string | null, shifts: number | null): string | null {
+/** Сколько часов техника работает за один день. */
+export const HOURS_PER_DAY = 8;
+
+/** Дата окончания по умолчанию: начало + ⌈часы / 8⌉ − 1. */
+export function defaultEndDate(start: string | null, hours: number | null): string | null {
   if (!start) return null;
-  return addDays(start, Math.max(1, shifts ?? 1) - 1);
+  return addDays(start, Math.max(1, Math.ceil((hours ?? 1) / HOURS_PER_DAY)) - 1);
 }
 
-export function requestEnd(request: Pick<RentalRequest, "start_date" | "end_date" | "shifts">): string | null {
-  return request.end_date ?? defaultEndDate(request.start_date, request.shifts);
+export function requestEnd(request: Pick<RentalRequest, "start_date" | "end_date" | "hours">): string | null {
+  return request.end_date ?? defaultEndDate(request.start_date, request.hours);
 }
 
 export interface Booking {

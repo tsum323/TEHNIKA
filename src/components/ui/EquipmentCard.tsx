@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { catalog } from "@/content/catalog";
-import { getCategory } from "@/content/equipment";
-import { formatPrice, plural } from "@/lib/format";
+import { getCategory, getMinOrderHours } from "@/content/equipment";
+import { formatHours, formatPrice } from "@/lib/format";
 import { asset } from "@/lib/paths";
 import { equipmentHref } from "@/lib/routes";
 import type { Equipment } from "@/types/equipment";
@@ -19,7 +19,7 @@ interface EquipmentCardProps {
 export function EquipmentCard({ item, maxSpecs = 3 }: EquipmentCardProps) {
   const category = getCategory(item.categoryId);
   const href = equipmentHref(item);
-  const shifts = `${item.minOrderShifts} ${plural(item.minOrderShifts, ["смена", "смены", "смен"])}`;
+  const minOrder = formatHours(getMinOrderHours(item));
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-white shadow-card transition-shadow duration-200 hover:shadow-card-hover">
@@ -57,10 +57,10 @@ export function EquipmentCard({ item, maxSpecs = 3 }: EquipmentCardProps) {
         <div className="mt-auto pt-5">
           <p className="flex flex-wrap items-baseline gap-x-1.5">
             <span className="text-sm text-muted">от</span>
-            <span className="text-2xl font-extrabold tracking-tight">{formatPrice(item.pricePerShift)}</span>
-            <span className="text-sm text-muted">/ смена</span>
+            <span className="text-2xl font-extrabold tracking-tight">{formatPrice(item.pricePerHour)}</span>
+            <span className="text-sm text-muted">/ час</span>
           </p>
-          <p className="mt-1 text-sm text-muted">Минимальный заказ: {shifts}</p>
+          <p className="mt-1 text-sm text-muted">Минимальный заказ: {minOrder}</p>
           <ButtonLink href={href} variant="secondary" fullWidth className="mt-5" aria-label={`${catalog.equipment.detailsButton}: ${item.name}`}>
             {catalog.equipment.detailsButton}
           </ButtonLink>

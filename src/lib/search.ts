@@ -38,7 +38,7 @@ export function buildSearchIndex(): SearchItem[] {
       title: category.name,
       subtitle: [
         `${count} ${plural(count, ["модель", "модели", "моделей"])}`,
-        minPrice !== undefined ? `от ${formatPrice(minPrice)} за смену` : null,
+        minPrice !== undefined ? `от ${formatPrice(minPrice)} за час` : null,
       ]
         .filter(Boolean)
         .join(" · "),
@@ -55,7 +55,7 @@ export function buildSearchIndex(): SearchItem[] {
       kind: "equipment",
       // «(демо)» в названии не помогает искать и только занимает место в подсказке
       title: item.name.replace(/\s*\(демо\)\s*$/i, ""),
-      subtitle: [category?.name, `от ${formatPrice(item.pricePerShift)} за смену`].filter(Boolean).join(" · "),
+      subtitle: [category?.name, `от ${formatPrice(item.pricePerHour)} за час`].filter(Boolean).join(" · "),
       href: equipmentHref(item),
       haystack: normalize(
         [

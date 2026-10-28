@@ -3,8 +3,8 @@ import type { Equipment, RentalRequest, RequestCost, SupplierOffer } from "@/typ
 /**
  * Финансовые расчёты.
  *
- * Выручка  = цена для клиента за смену × количество смен
- * Расходы  = закупочная цена за смену × количество смен + разовые расходы (доставка и т. п.)
+ * Выручка  = цена для клиента за час × количество часов
+ * Расходы  = закупочная цена за час × количество часов + разовые расходы (доставка и т. п.)
  * Прибыль  = выручка − расходы
  * Наценка  = прибыль / расходы   (на сколько процентов мы продаём дороже, чем берём)
  * Маржа    = прибыль / выручка   (какая доля выручки остаётся у нас)
@@ -19,9 +19,9 @@ export interface Money {
 }
 
 export function requestMoney(request: RentalRequest, cost: RequestCost | undefined): Money {
-  const shifts = request.shifts ?? 0;
-  const revenue = request.client_price_per_shift != null && shifts > 0 ? request.client_price_per_shift * shifts : null;
-  const totalCost = cost && shifts > 0 ? cost.cost_per_shift * shifts + cost.extra_costs : null;
+  const hours = request.hours ?? 0;
+  const revenue = request.client_price_per_hour != null && hours > 0 ? request.client_price_per_hour * hours : null;
+  const totalCost = cost && hours > 0 ? cost.cost_per_hour * hours + cost.extra_costs : null;
   const profit = revenue != null && totalCost != null ? revenue - totalCost : null;
   return {
     revenue,
@@ -36,11 +36,11 @@ export function requestMoney(request: RentalRequest, cost: RequestCost | undefin
 export function bestOffer(equipmentId: string, offers: SupplierOffer[]): SupplierOffer | undefined {
   return offers
     .filter((offer) => offer.equipment_id === equipmentId)
-    .reduce<SupplierOffer | undefined>((best, offer) => (!best || offer.cost_per_shift < best.cost_per_shift ? offer : best), undefined);
+    .reduce<SupplierOffer | undefined>((best, offer) => (!best || offer.cost_per_hour < best.cost_per_hour ? offer : best), undefined);
 }
 
-/** Разница между нашей ценой и закупочной за одну смену. */
-export function shiftMarkup(clientPrice: number, costPrice: number) {
+/** Разница между нашей ценой и закупочной за один час. */
+export function hourMarkup(clientPrice: number, costPrice: number) {
   const diff = clientPrice - costPrice;
   return { diff, markup: costPrice > 0 ? diff / costPrice : null };
 }
@@ -48,7 +48,7 @@ export function shiftMarkup(clientPrice: number, costPrice: number) {
 export function equipmentMarkup(item: Equipment, offers: SupplierOffer[]) {
   const offer = bestOffer(item.id, offers);
   if (!offer) return null;
-  return { offer, ...shiftMarkup(item.client_price_per_shift, offer.cost_per_shift) };
+  return { offer, ...hourMarkup(item.client_price_per_hour, offer.cost_per_hour) };
 }
 
 /** Дата, к которой относим заявку в статистике: дата начала работ или дата создания. */

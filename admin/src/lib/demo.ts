@@ -79,36 +79,36 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
 
   const suppliers: Supplier[] = [
     { id: "s1", name: "Поставщик А (демо)", contact_person: "Иван", phone: "+7 (000) 000-00-01", email: "a@example.com", city: "Краснодар", notes: "", created_at: created },
-    { id: "s2", name: "Поставщик Б (демо)", contact_person: "Олег", phone: "+7 (000) 000-00-02", email: "b@example.com", city: "Новороссийск", notes: "Скидка при заказе от 5 смен", created_at: created },
+    { id: "s2", name: "Поставщик Б (демо)", contact_person: "Олег", phone: "+7 (000) 000-00-02", email: "b@example.com", city: "Новороссийск", notes: "Скидка при заказе от 40 часов", created_at: created },
     { id: "s3", name: "Поставщик В (демо)", contact_person: "Анна", phone: "+7 (000) 000-00-03", email: "c@example.com", city: "Армавир", notes: "", created_at: created },
   ];
 
   const eq = (id: string, name: string, category: CategoryId, price: number, specs: string, min = 1): Equipment => ({
-    id, name, category, specs, client_price_per_shift: price, min_shifts: min, is_active: true, notes: "", created_at: created,
+    id, name, category, specs, client_price_per_hour: price, min_hours: min, is_active: true, notes: "", created_at: created,
   });
   const equipment: Equipment[] = [
-    eq("e1", "Гусеничный экскаватор 22 т", "excavators", 25000, "Ковш 1,0 м³, копание 6,5 м"),
-    eq("e2", "Колёсный экскаватор 16 т", "excavators", 22000, "Ковш 0,7 м³"),
-    eq("e3", "Экскаватор-погрузчик 8 т", "backhoe-loaders", 16000, "Ковш 1,0 / 0,2 м³"),
-    eq("e4", "Экскаватор-погрузчик с гидромолотом", "backhoe-loaders", 19000, "Гидромолот"),
-    eq("e5", "Автокран 25 т", "truck-cranes", 28000, "Стрела 28 м"),
-    eq("e6", "Автокран 50 т", "truck-cranes", 45000, "Стрела 40 м"),
-    eq("e7", "Самосвал 20 м³", "dump-trucks", 18000, "25 т, 6×4"),
-    eq("e8", "Самосвал 10 м³", "dump-trucks", 15000, "15 т, 6×6"),
-    eq("e9", "Грунтовый каток 12 т", "rollers", 17000, "Валец 2,1 м"),
-    eq("e10", "Асфальтовый тандемный каток", "rollers", 14000, "4 т"),
-    eq("e11", "Фронтальный погрузчик 3 м³", "wheel-loaders", 20000, "5 т"),
-    eq("e12", "Мини-погрузчик", "wheel-loaders", 12000, "Ковш 0,5 м³", 2),
+    eq("e1", "Гусеничный экскаватор 22 т", "excavators", 2800, "Ковш 1,0 м³, копание 6,5 м", 4),
+    eq("e2", "Колёсный экскаватор 16 т", "excavators", 2500, "Ковш 0,7 м³", 4),
+    eq("e3", "Экскаватор-погрузчик 8 т", "backhoe-loaders", 1800, "Ковш 1,0 / 0,2 м³", 2),
+    eq("e4", "Экскаватор-погрузчик с гидромолотом", "backhoe-loaders", 2200, "Гидромолот", 2),
+    eq("e5", "Автокран 25 т", "truck-cranes", 2500, "Стрела 28 м", 4),
+    eq("e6", "Автокран 50 т", "truck-cranes", 4500, "Стрела 40 м", 4),
+    eq("e7", "Самосвал 20 м³", "dump-trucks", 2000, "25 т, 6×4", 8),
+    eq("e8", "Самосвал 10 м³", "dump-trucks", 1700, "15 т, 6×6", 8),
+    eq("e9", "Грунтовый каток 12 т", "rollers", 2000, "Валец 2,1 м", 8),
+    eq("e10", "Асфальтовый тандемный каток", "rollers", 1700, "4 т", 8),
+    eq("e11", "Фронтальный погрузчик 3 м³", "wheel-loaders", 2200, "5 т", 2),
+    eq("e12", "Мини-погрузчик", "wheel-loaders", 1500, "Ковш 0,5 м³", 2),
   ];
 
   const offer = (equipment_id: string, supplier_id: string, cost: number): SupplierOffer => ({
-    id: `${equipment_id}-${supplier_id}`, equipment_id, supplier_id, cost_per_shift: cost, notes: "", created_at: created,
+    id: `${equipment_id}-${supplier_id}`, equipment_id, supplier_id, cost_per_hour: cost, notes: "", created_at: created,
   });
   const supplier_offers: SupplierOffer[] = [
-    offer("e1", "s1", 19000), offer("e1", "s2", 18000), offer("e2", "s1", 17000), offer("e3", "s2", 12000),
-    offer("e4", "s2", 14500), offer("e5", "s3", 22000), offer("e6", "s3", 36000), offer("e7", "s1", 13500),
-    offer("e7", "s3", 14000), offer("e8", "s1", 11000), offer("e9", "s2", 12500), offer("e10", "s2", 10500),
-    offer("e11", "s3", 15000), offer("e12", "s1", 8500),
+    offer("e1", "s1", 2200), offer("e1", "s2", 2100), offer("e2", "s1", 2000), offer("e3", "s2", 1400),
+    offer("e4", "s2", 1700), offer("e5", "s3", 1900), offer("e6", "s3", 3600), offer("e7", "s1", 1550),
+    offer("e7", "s3", 1600), offer("e8", "s1", 1300), offer("e9", "s2", 1500), offer("e10", "s2", 1300),
+    offer("e11", "s3", 1700), offer("e12", "s1", 1150),
   ];
 
   const clients: Client[] = [
@@ -129,28 +129,28 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
     const client = rnd() < 0.75 ? clients[Math.floor(rnd() * clients.length)] : null;
     // Свежие заявки чаще новые и в работе, старые — выполнены или отменены.
     const status: RequestStatus = daysAgo < 10 ? (["new", "in_progress", "confirmed"] as const)[i % 3] : statuses[Math.floor(rnd() * statuses.length)];
-    const shifts = 1 + Math.floor(rnd() * 8);
+    const hours = Math.max(item.min_hours, 4 * (1 + Math.floor(rnd() * 10)));
     const start = isoDaysAgo(daysAgo).slice(0, 10);
     const id = `r${i + 1}`;
     requests.push({
       id, number: i + 1, client_id: client?.id ?? null,
       contact_name: client?.name ?? "Частный заказчик (демо)", contact_phone: client?.phone ?? "+7 (000) 555-55-55",
       source: sources[Math.floor(rnd() * sources.length)], category: item.category, equipment_id: item.id,
-      address: "Краснодарский край (демо)", start_date: start, end_date: null, shifts, client_price_per_shift: item.client_price_per_shift,
+      address: "Краснодарский край (демо)", start_date: start, end_date: null, hours, client_price_per_hour: item.client_price_per_hour,
       status, comment: "", created_by: DEMO_MANAGER_ID, created_at: isoDaysAgo(daysAgo + 3),
     });
-    const best = supplier_offers.filter((o) => o.equipment_id === item.id).sort((a, b) => a.cost_per_shift - b.cost_per_shift)[0];
+    const best = supplier_offers.filter((o) => o.equipment_id === item.id).sort((a, b) => a.cost_per_hour - b.cost_per_hour)[0];
     if (best && (status === "completed" || status === "confirmed")) {
-      request_costs.push({ request_id: id, supplier_id: best.supplier_id, cost_per_shift: best.cost_per_shift, extra_costs: rnd() < 0.5 ? 3000 : 0, notes: "" });
+      request_costs.push({ request_id: id, supplier_id: best.supplier_id, cost_per_hour: best.cost_per_hour, extra_costs: rnd() < 0.5 ? 3000 : 0, notes: "" });
     }
   }
   // Брони на ближайшие недели — чтобы календарь занятости был наглядным (есть и одно пересечение).
   const future: [string, number, number, RequestStatus, string][] = [
-    ["e1", 1, 5, "confirmed", "c1"], ["e1", 4, 3, "in_progress", "c3"], ["e5", 2, 2, "confirmed", "c4"],
-    ["e7", 0, 10, "confirmed", "c2"], ["e9", 6, 4, "new", "c1"], ["e11", 3, 6, "confirmed", "c4"],
-    ["e3", 9, 3, "in_progress", "c2"], ["e6", 12, 2, "confirmed", "c1"], ["e12", 1, 4, "confirmed", "c3"],
+    ["e1", 1, 40, "confirmed", "c1"], ["e1", 4, 24, "in_progress", "c3"], ["e5", 2, 16, "confirmed", "c4"],
+    ["e7", 0, 80, "confirmed", "c2"], ["e9", 6, 32, "new", "c1"], ["e11", 3, 48, "confirmed", "c4"],
+    ["e3", 9, 24, "in_progress", "c2"], ["e6", 12, 16, "confirmed", "c1"], ["e12", 1, 32, "confirmed", "c3"],
   ];
-  future.forEach(([equipmentId, inDays, shifts, status, clientId], i) => {
+  future.forEach(([equipmentId, inDays, hours, status, clientId], i) => {
     const item = equipment.find((e) => e.id === equipmentId)!;
     const client = clients.find((c) => c.id === clientId)!;
     const start = isoDaysAgo(-inDays).slice(0, 10);
@@ -158,11 +158,11 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
     requests.push({
       id, number: requests.length + 1, client_id: client.id, contact_name: client.name, contact_phone: client.phone,
       source: "phone", category: item.category, equipment_id: item.id, address: "Краснодарский край (демо)",
-      start_date: start, end_date: null, shifts, client_price_per_shift: item.client_price_per_shift,
+      start_date: start, end_date: null, hours, client_price_per_hour: item.client_price_per_hour,
       status, comment: "", created_by: DEMO_MANAGER_ID, created_at: isoDaysAgo(2),
     });
-    const best = supplier_offers.filter((o) => o.equipment_id === item.id).sort((a, b) => a.cost_per_shift - b.cost_per_shift)[0];
-    if (best && status === "confirmed") request_costs.push({ request_id: id, supplier_id: best.supplier_id, cost_per_shift: best.cost_per_shift, extra_costs: 0, notes: "" });
+    const best = supplier_offers.filter((o) => o.equipment_id === item.id).sort((a, b) => a.cost_per_hour - b.cost_per_hour)[0];
+    if (best && status === "confirmed") request_costs.push({ request_id: id, supplier_id: best.supplier_id, cost_per_hour: best.cost_per_hour, extra_costs: 0, notes: "" });
   });
   requests.sort((a, b) => b.number - a.number);
 
@@ -181,7 +181,7 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
   };
   for (const r of requests) {
     if (r.status !== "completed" && r.status !== "confirmed") continue;
-    const revenue = (r.client_price_per_shift ?? 0) * (r.shifts ?? 0);
+    const revenue = (r.client_price_per_hour ?? 0) * (r.hours ?? 0);
     const cost = request_costs.find((c) => c.request_id === r.id);
     const roll = rnd();
     if (r.status === "completed") {
@@ -190,7 +190,7 @@ function buildSeed(): { [K in TableName]: Tables[K][] } {
       // иначе — клиент ещё не платил (должник)
     } else if (roll < 0.5) pay(r, "incoming", revenue * 0.3, -2); // предоплата
     if (cost && r.status === "completed") {
-      const total = cost.cost_per_shift * (r.shifts ?? 0) + cost.extra_costs;
+      const total = cost.cost_per_hour * (r.hours ?? 0) + cost.extra_costs;
       if (rnd() < 0.8) pay(r, "outgoing", total, 7);
       else pay(r, "outgoing", total * 0.5, 2);
     }

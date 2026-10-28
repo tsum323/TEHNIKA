@@ -21,7 +21,7 @@ interface RequestFormProps {
 }
 
 // Порядок полей — для перехода к первому полю с ошибкой.
-const fieldOrder: RequestFormField[] = ["name", "phone", "category", "equipment", "address", "startDate", "shifts", "comment"];
+const fieldOrder: RequestFormField[] = ["name", "phone", "category", "equipment", "address", "startDate", "hours", "comment"];
 
 /**
  * Форма заявки на аренду.
@@ -162,14 +162,14 @@ export function RequestForm({ defaultCategory = "", defaultEquipment = "" }: Req
         />
         <Input {...bind("startDate")} label={text.labels.startDate} hint={text.hints.startDate} type="date" />
         <Input
-          {...bind("shifts")}
-          label={text.labels.shifts}
-          placeholder={text.placeholders.shifts}
-          hint={text.hints.shifts}
+          {...bind("hours")}
+          label={text.labels.hours}
+          placeholder={text.placeholders.hours}
+          hint={text.hints.hours}
           type="number"
           inputMode="numeric"
           min={1}
-          max={365}
+          max={2000}
         />
         <Textarea
           {...bind("comment")}

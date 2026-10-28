@@ -28,6 +28,8 @@ export interface EquipmentCategory {
   requestChecklist: string[];
   /** Дополнительные слова для поиска: разговорные названия, марки, задачи. */
   searchKeywords?: string[];
+  /** Минимальный заказ в часах для всей категории. Не указан — можно заказать от 1 часа. */
+  minOrderHours?: number;
   /** Путь к изображению от папки public/, например "/placeholders/excavator.svg". */
   image: string;
   /** Текст для alt изображения. */
@@ -48,10 +50,10 @@ export interface Equipment {
   description?: string;
   /** 3–5 основных характеристик. */
   specs: EquipmentSpec[];
-  /** Публичная цена за смену в рублях (минимальная, «от»). */
-  pricePerShift: number;
-  /** Минимальный срок заказа в сменах. */
-  minOrderShifts: number;
+  /** Публичная цена за час работы в рублях (минимальная, «от»). */
+  pricePerHour: number;
+  /** Минимальный заказ в часах, если у этой машины он отличается от категории. */
+  minOrderHours?: number;
   image: string;
   imageAlt: string;
   /** Показывать в блоке «Популярная техника» на главной. */

@@ -32,15 +32,15 @@ interface FormState {
   category: string;
   equipment_id: string;
   start_date: string;
-  /** Пусто — считается автоматически по сменам. */
+  /** Пусто — считается автоматически по часам. */
   end_date: string;
-  shifts: string;
-  client_price_per_shift: string;
+  hours: string;
+  client_price_per_hour: string;
   address: string;
   comment: string;
   // Финансы — только владелец
   supplier_id: string;
-  cost_per_shift: string;
+  cost_per_hour: string;
   extra_costs: string;
   cost_notes: string;
 }
@@ -58,12 +58,12 @@ function initialState(request: RentalRequest | null, cost: RequestCost | undefin
     equipment_id: request?.equipment_id ?? "",
     start_date: request?.start_date ?? "",
     end_date: request?.end_date ?? "",
-    shifts: str(request?.shifts),
-    client_price_per_shift: str(request?.client_price_per_shift),
+    hours: str(request?.hours),
+    client_price_per_hour: str(request?.client_price_per_hour),
     address: request?.address ?? "",
     comment: request?.comment ?? "",
     supplier_id: cost?.supplier_id ?? "",
-    cost_per_shift: str(cost?.cost_per_shift),
+    cost_per_hour: str(cost?.cost_per_hour),
     extra_costs: cost?.extra_costs ? String(cost.extra_costs) : "",
     cost_notes: cost?.notes ?? "",
   };
@@ -89,10 +89,10 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
   const supplierOptions = useMemo(() => {
     const offers = data.supplier_offers.filter((o) => o.equipment_id === form.equipment_id);
     const withOffer = offers
-      .sort((a, b) => a.cost_per_shift - b.cost_per_shift)
+      .sort((a, b) => a.cost_per_hour - b.cost_per_hour)
       .map((o) => {
         const supplier = data.suppliers.find((s) => s.id === o.supplier_id);
-        return { value: o.supplier_id, label: `${supplier?.name ?? "?"} — ${formatMoney(o.cost_per_shift)}/смена` };
+        return { value: o.supplier_id, label: `${supplier?.name ?? "?"} — ${formatMoney(o.cost_per_hour)}/час` };
       });
     const others = data.suppliers.filter((s) => !offers.some((o) => o.supplier_id === s.id)).map((s) => ({ value: s.id, label: s.name }));
     return [...withOffer, ...others];
@@ -110,42 +110,44 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
 
   function chooseEquipment(equipmentId: string) {
     const item = data.equipment.find((e) => e.id === equipmentId);
-    const best = data.supplier_offers.filter((o) => o.equipment_id === equipmentId).sort((a, b) => a.cost_per_shift - b.cost_per_shift)[0];
+    const best = data.supplier_offers.filter((o) => o.equipment_id === equipmentId).sort((a, b) => a.cost_per_hour - b.cost_per_hour)[0];
     setForm((prev) => ({
       ...prev,
       equipment_id: equipmentId,
       category: item?.category ?? prev.category,
-      client_price_per_shift: prev.client_price_per_shift || str(item?.client_price_per_shift),
+      client_price_per_hour: prev.client_price_per_hour || str(item?.client_price_per_hour),
+      hours: prev.hours || str(item?.min_hours),
       supplier_id: prev.supplier_id || best?.supplier_id || "",
-      cost_per_shift: prev.cost_per_shift || str(best?.cost_per_shift),
+      cost_per_hour: prev.cost_per_hour || str(best?.cost_per_hour),
     }));
   }
 
   function chooseSupplier(supplierId: string) {
     const offer = data.supplier_offers.find((o) => o.supplier_id === supplierId && o.equipment_id === form.equipment_id);
-    setForm((prev) => ({ ...prev, supplier_id: supplierId, cost_per_shift: offer ? String(offer.cost_per_shift) : prev.cost_per_shift }));
+    setForm((prev) => ({ ...prev, supplier_id: supplierId, cost_per_hour: offer ? String(offer.cost_per_hour) : prev.cost_per_hour }));
   }
 
   // Предварительный расчёт денег по текущим значениям формы.
-  const shifts = parseNumber(form.shifts);
-  const autoEnd = defaultEndDate(form.start_date || null, shifts);
+  const hours = parseNumber(form.hours);
+  const minHours = data.equipment.find((e) => e.id === form.equipment_id)?.min_hours ?? 1;
+  const autoEnd = defaultEndDate(form.start_date || null, hours);
   const endDate = form.end_date || autoEnd;
   const conflicts = conflictsFor(
     { equipmentId: form.equipment_id || null, start: form.start_date || null, end: endDate, excludeId: request?.id },
     data.requests,
   );
   const preview = requestMoney(
-    { shifts, client_price_per_shift: parseNumber(form.client_price_per_shift) } as RentalRequest,
-    form.cost_per_shift ? ({ cost_per_shift: parseNumber(form.cost_per_shift) ?? 0, extra_costs: parseNumber(form.extra_costs) ?? 0 } as RequestCost) : undefined,
+    { hours, client_price_per_hour: parseNumber(form.client_price_per_hour) } as RentalRequest,
+    form.cost_per_hour ? ({ cost_per_hour: parseNumber(form.cost_per_hour) ?? 0, extra_costs: parseNumber(form.extra_costs) ?? 0 } as RequestCost) : undefined,
   );
 
   function validate() {
     const next: typeof errors = {};
     if (!form.contact_name.trim()) next.contact_name = "Укажите имя или название клиента";
-    if (form.shifts && (!Number.isInteger(shifts) || (shifts ?? 0) < 1)) next.shifts = "Целое число от 1";
+    if (form.hours && (!Number.isInteger(hours) || (hours ?? 0) < 1)) next.hours = "Целое число от 1";
     if (form.end_date && !form.start_date) next.end_date = "Сначала укажите дату начала";
     if (form.end_date && form.start_date && form.end_date < form.start_date) next.end_date = "Не раньше даты начала";
-    for (const field of ["client_price_per_shift", "cost_per_shift", "extra_costs"] as const) {
+    for (const field of ["client_price_per_hour", "cost_per_hour", "extra_costs"] as const) {
       const value = parseNumber(form[field]);
       if (form[field] && (value == null || value < 0)) next[field] = "Введите сумму числом";
     }
@@ -166,10 +168,10 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
       category: (form.category || null) as CategoryId | null,
       equipment_id: form.equipment_id || null,
       start_date: form.start_date || null,
-      // Если дата окончания совпадает с расчётной — храним пусто, чтобы она пересчитывалась при смене смен.
+      // Если дата окончания совпадает с расчётной — храним пусто, чтобы она пересчитывалась при изменении часов.
       end_date: form.end_date && form.end_date !== autoEnd ? form.end_date : null,
-      shifts,
-      client_price_per_shift: parseNumber(form.client_price_per_shift),
+      hours,
+      client_price_per_hour: parseNumber(form.client_price_per_hour),
       address: form.address,
       comment: form.comment,
     };
@@ -179,12 +181,12 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
       else id = (await db.insert("requests", row)).id;
 
       if (isOwner) {
-        const hasCost = form.supplier_id || form.cost_per_shift || form.extra_costs || form.cost_notes;
+        const hasCost = form.supplier_id || form.cost_per_hour || form.extra_costs || form.cost_notes;
         if (hasCost) {
           await db.upsert("request_costs", {
             request_id: id,
             supplier_id: form.supplier_id || null,
-            cost_per_shift: parseNumber(form.cost_per_shift) ?? 0,
+            cost_per_hour: parseNumber(form.cost_per_hour) ?? 0,
             extra_costs: parseNumber(form.extra_costs) ?? 0,
             notes: form.cost_notes,
           });
@@ -275,7 +277,16 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
           />
           <SelectField label="Техника" placeholder="— не выбрана —" options={equipmentOptions} value={form.equipment_id} onChange={(e) => chooseEquipment(e.target.value)} />
           <TextField label="Дата начала" type="date" value={form.start_date} onChange={(e) => set("start_date", e.target.value)} />
-          <TextField label="Смен" type="number" inputMode="numeric" min={1} value={form.shifts} onChange={(e) => set("shifts", e.target.value)} error={errors.shifts} />
+          <TextField
+            label="Часов"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            value={form.hours}
+            onChange={(e) => set("hours", e.target.value)}
+            error={errors.hours}
+            hint={hours != null && hours < minHours ? `Меньше минимального заказа: ${minHours} ч` : minHours > 1 ? `Минимальный заказ: ${minHours} ч` : undefined}
+          />
           <TextField
             label="Дата окончания"
             type="date"
@@ -283,7 +294,7 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
             min={form.start_date || undefined}
             onChange={(e) => set("end_date", e.target.value)}
             error={errors.end_date}
-            hint={form.end_date && form.end_date !== autoEnd ? "Указана вручную" : "Считается сама: начало + смены − 1"}
+            hint={form.end_date && form.end_date !== autoEnd ? "Указана вручную" : "Считается сама: 8 часов = 1 день"}
           />
           {form.end_date && form.end_date !== autoEnd && (
             <div className="flex items-end pb-2">
@@ -306,13 +317,13 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
             </div>
           )}
           <TextField
-            label="Цена для клиента за смену, ₽"
+            label="Цена для клиента за час, ₽"
             type="number"
             inputMode="decimal"
             min={0}
-            value={form.client_price_per_shift}
-            onChange={(e) => set("client_price_per_shift", e.target.value)}
-            error={errors.client_price_per_shift}
+            value={form.client_price_per_hour}
+            onChange={(e) => set("client_price_per_hour", e.target.value)}
+            error={errors.client_price_per_hour}
           />
           <TextField label="Адрес объекта" value={form.address} onChange={(e) => set("address", e.target.value)} />
           <TextAreaField label="Комментарий" value={form.comment} onChange={(e) => set("comment", e.target.value)} className="sm:col-span-2" />
@@ -323,13 +334,13 @@ export function RequestDialog({ request, open, onClose }: RequestDialogProps) {
             <legend className="px-1 text-sm font-bold tracking-wide text-muted uppercase">Финансы — видит только владелец</legend>
             <SelectField label="Поставщик" placeholder="— не выбран —" options={supplierOptions} value={form.supplier_id} onChange={(e) => chooseSupplier(e.target.value)} className="sm:col-span-2" />
             <TextField
-              label="Закупочная цена за смену, ₽"
+              label="Закупочная цена за час, ₽"
               type="number"
               inputMode="decimal"
               min={0}
-              value={form.cost_per_shift}
-              onChange={(e) => set("cost_per_shift", e.target.value)}
-              error={errors.cost_per_shift}
+              value={form.cost_per_hour}
+              onChange={(e) => set("cost_per_hour", e.target.value)}
+              error={errors.cost_per_hour}
             />
             <TextField
               label="Доп. расходы, ₽"
