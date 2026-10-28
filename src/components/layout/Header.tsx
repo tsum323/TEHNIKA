@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
+import { cn } from "@/lib/cn";
 import { scrollToHashOnPage } from "@/lib/hashLink";
 import { routes } from "@/lib/routes";
+import { useActiveNav } from "@/lib/useActiveNav";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
@@ -18,9 +19,9 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const { contacts, navigation } = site;
-  const pathname = usePathname();
-  // Пункт меню активен, если это страница (не якорь) и мы находимся в ней или в её подразделе.
-  const isActive = (href: string) => !href.includes("#") && pathname.startsWith(href.replace(/\/$/, ""));
+  // Подсвечиваем страницу, в которой находимся, или раздел, который сейчас на экране.
+  const activeHref = useActiveNav(navigation);
+  const current = (href: string) => (href === activeHref ? (href.includes("#") ? "location" : "page") : undefined);
 
   // Закрываем меню клавишей Escape и возвращаем фокус на кнопку меню.
   useEffect(() => {
@@ -59,8 +60,13 @@ export function Header() {
                 <Link
                   href={link.href}
                   onClick={(event) => scrollToHashOnPage(event, link.href)}
-                  aria-current={isActive(link.href) ? "page" : undefined}
-                  className="rounded-control px-3 py-2 text-[0.9375rem] font-medium text-steel-300 transition-colors duration-150 hover:text-white aria-[current=page]:text-signal"
+                  aria-current={current(link.href)}
+                  className={cn(
+                    "relative block rounded-control px-3 py-2 text-[0.9375rem] font-medium transition-colors duration-150 hover:text-white",
+                    // Жёлтая полоска под активным пунктом
+                    "after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:origin-center after:rounded-full after:bg-signal after:transition-transform after:duration-200 motion-reduce:after:transition-none",
+                    link.href === activeHref ? "text-white after:scale-x-100" : "text-steel-300 after:scale-x-0",
+                  )}
                 >
                   {link.label}
                 </Link>
@@ -111,8 +117,11 @@ export function Header() {
                       close();
                       scrollToHashOnPage(event, link.href);
                     }}
-                    aria-current={isActive(link.href) ? "page" : undefined}
-                    className="flex items-center justify-between border-b border-white/10 py-4 text-lg font-semibold aria-[current=page]:text-signal"
+                    aria-current={current(link.href)}
+                    className={cn(
+                      "flex items-center justify-between border-b border-white/10 py-4 text-lg font-semibold",
+                      link.href === activeHref && "-ml-4 border-l-4 border-l-signal pl-3 text-signal",
+                    )}
                   >
                     {link.label}
                     <Icon name="arrowRight" className="size-5 text-signal" />
